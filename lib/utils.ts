@@ -20,7 +20,7 @@ const checkIconExists = async (url: string) => {
   try {
     const response = await fetch(url, { method: "HEAD" });
     return response.ok; // Returns true if the icon exists
-  } catch {
+} catch {
     return false;
   }
 };

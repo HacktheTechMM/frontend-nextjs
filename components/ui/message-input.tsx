@@ -216,7 +216,7 @@ export function MessageInput({
           />
 
           {props.allowAttachments && (
-            <div className="absolute inset-x-3 bottom-0 z-20 overflow-x-scroll py-3">
+            <div className="absolute inset-x-3 bottom-0 z-20 py-3">
               <div className="flex space-x-3">
                 <AnimatePresence mode="popLayout">
                   {props.files?.map((file) => {
@@ -251,7 +251,7 @@ export function MessageInput({
             type="button"
             size="icon"
             variant="outline"
-            className="h-8 w-8"
+            className="h-8 w-8 cursor-pointer"
             aria-label="Attach a file"
             onClick={async () => {
               const files = await showFileUploadDialog()
@@ -265,7 +265,7 @@ export function MessageInput({
           <Button
             type="button"
             variant="outline"
-            className={cn("h-8 w-8", isListening && "text-primary")}
+            className={cn("h-8 w-8 ", isListening && "text-primary")}
             aria-label="Voice input"
             size="icon"
             onClick={toggleListening}
@@ -287,7 +287,7 @@ export function MessageInput({
           <Button
             type="submit"
             size="icon"
-            className="h-8 w-8 transition-opacity"
+              className="h-8 w-8 transition-opacity cursor-pointer"
             aria-label="Send message"
             disabled={props.value === "" || isGenerating}
           >

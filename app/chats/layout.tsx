@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings, BotMessageSquare } from "lucide-react"
 import { usePathname } from "next/navigation"
 import {
   Sidebar,
@@ -21,9 +21,9 @@ import { cn } from "@/lib/utils"
 // Menu items.
 const items = [
   {
-    title: "Talk with Ai",
+    title: "AI Mentor",
     url: "/chats",
-    icon: Home,
+    icon: BotMessageSquare,
   },
   {
     title: "Test",
@@ -101,7 +101,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                           <Button
                             variant="ghost"
                             className={cn(
-                              "w-full dark:bg-accent dark:text-white dark:hover:bg-accent/80 p-5.5 mb-6 justify-start",
+                              "cursor-pointer w-full dark:bg-accent dark:text-white dark:hover:bg-accent/80 p-5.5 mb-3 justify-start",
                               isActive && "bg-gray-300 hover:bg-gray-400 dark:bg-primary dark:text-black dark:hover:bg-primary/80"
                             )}
                           >
