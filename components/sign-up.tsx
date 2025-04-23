@@ -1,13 +1,81 @@
+"use client"
+
 import { LogoIcon } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 import Link from 'next/link'
+import { redirect, useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+
+
+const signUpSchema = z.object({
+    name: z.string().min(1, "Username is required"),
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(5, "Password must be at least 5 characters"),
+    password_confirmation: z.string()
+}).refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords don't match",
+    path: ["password_confirmation"]
+});
+
 
 export default function RegisterPage() {
+
+    const router = useRouter();
+
+    const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
+        resolver: zodResolver(signUpSchema),
+        mode: 'onBlur'
+    });
+
+
+    const onSubmit = async (data: any) => {
+        try {
+            let response = await axios.post(`http://127.0.0.1:8000/api/v1/auth/register`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+
+
+            let { token, user } = response.data.data;
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+            router.push("/")
+
+        } catch (error: any) {
+
+            if (error.response?.data?.errors) {
+                Object.entries(error.response.data.errors).forEach(([key, message]) => {
+                    setError(key as "name" | "email" | "password" | "password_confirmation", { type: "server", message: message as string });
+                });
+            } else {
+                setError("root.serverError", { type: "server", message: "An unexpected error occurred." });
+            }
+        }
+    }
+
+    const handleSocialAuth = (provider: string) => {
+        try {
+            // TODO:: to add href link to redirect callback
+            window.location.href = `http://127.0.0.1:8000/auth/${provider}/redirect`;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
             <form
+                onSubmit={handleSubmit(onSubmit)}
                 action=""
                 className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
                 <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
@@ -23,47 +91,41 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="mt-6 space-y-6">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="firstname"
-                                    className="block text-sm">
-                                    Firstname
-                                </Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    name="firstname"
-                                    id="firstname"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="lastname"
-                                    className="block text-sm">
-                                    Lastname
-                                </Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    name="lastname"
-                                    id="lastname"
-                                />
-                            </div>
+
+                        <div className="space-y-2">
+                            <Label
+                                htmlFor="name"
+                                className="block text-sm">
+                                Username
+                            </Label>
+                            <Input
+                                type="text"
+                                required
+                                id="name"
+                                {...register("name")}
+                            />
+                            {errors.name && (
+                                <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                            )}
                         </div>
+
 
                         <div className="space-y-2">
                             <Label
                                 htmlFor="email"
                                 className="block text-sm">
-                                Username
+                                Email
                             </Label>
                             <Input
                                 type="email"
                                 required
-                                name="email"
                                 id="email"
+                                {...register("email")}
                             />
+
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                            )}
                         </div>
 
                         <div className="space-y-0.5">
@@ -87,13 +149,45 @@ export default function RegisterPage() {
                             <Input
                                 type="password"
                                 required
-                                name="pwd"
                                 id="pwd"
                                 className="input sz-md variant-mixed"
+                                {...register("password")}
                             />
+
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                            )}
                         </div>
 
-                        <Button className="w-full">Sign In</Button>
+
+                        <div className="space-y-0.5">
+                            <div className="flex items-center justify-between">
+                                <Label
+                                    htmlFor="pwdconfirm"
+                                    className="text-title text-sm">
+                                    Password Confirmation
+                                </Label>
+                                <Button
+                                    asChild
+                                    variant="link"
+                                    size="sm">
+
+                                </Button>
+                            </div>
+                            <Input
+                                type="password"
+                                required
+                                id="pwdconfirm"
+                                className="input sz-md variant-mixed"
+                                {...register("password_confirmation")}
+                            />
+
+                            {errors.password_confirmation && (
+                                <p className="mt-1 text-sm text-red-500">{errors.password_confirmation.message}</p>
+                            )}
+                        </div>
+
+                        <Button type="submit" className="w-full" >Sign In</Button>
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -105,7 +199,9 @@ export default function RegisterPage() {
                     <div className="grid grid-cols-2 gap-3">
                         <Button
                             type="button"
-                            variant="outline">
+                            variant="outline"
+                            onClick={() => handleSocialAuth('google')}
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="0.98em"
@@ -128,26 +224,10 @@ export default function RegisterPage() {
                         </Button>
                         <Button
                             type="button"
-                            variant="outline">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 256 256">
-                                <path
-                                    fill="#f1511b"
-                                    d="M121.666 121.666H0V0h121.666z"></path>
-                                <path
-                                    fill="#80cc28"
-                                    d="M256 121.666H134.335V0H256z"></path>
-                                <path
-                                    fill="#00adef"
-                                    d="M121.663 256.002H0V134.336h121.663z"></path>
-                                <path
-                                    fill="#fbbc09"
-                                    d="M256 256.002H134.335V134.336H256z"></path>
-                            </svg>
-                            <span>Microsoft</span>
+                            variant="outline"
+                            onClick={() => handleSocialAuth('github')}>
+                            <img src={"/github.svg"} alt="github" className="w-4 h-4" />
+                            <span>Github</span>
                         </Button>
                     </div>
                 </div>
@@ -159,7 +239,7 @@ export default function RegisterPage() {
                             asChild
                             variant="link"
                             className="px-2">
-                            <Link href="#">Sign In</Link>
+                            <Link href="/login">Sign In</Link>
                         </Button>
                     </p>
                 </div>
