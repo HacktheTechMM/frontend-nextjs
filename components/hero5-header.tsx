@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Logo } from './logo'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from './theme-toggle'
 import { UserDropdown } from './user-dropdown'
@@ -15,20 +15,23 @@ const menuItems = [
     { name: 'About', href: '#link' },
 ]
 
+
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    let token = localStorage.getItem('token');
-
-    React.useEffect(() => {
+    const [token, setToken] = useState<string | null>(null);
+    useEffect(() => {
+        // Runs only on client
+        const savedToken = localStorage.getItem("token");
+        setToken(savedToken);
+    
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50)
-        }
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-
-        
-    }, [])
+          setIsScrolled(window.scrollY > 50);
+        };
+    
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+      }, []);
     return (
         <header>
             <nav
