@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 const loginSchema = z.object({
     email: z.string().email("Please enter a valid email"),
@@ -21,7 +21,7 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
 
-
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
         resolver: zodResolver(loginSchema),
@@ -42,6 +42,8 @@ export default function LoginPage() {
             let { token, user } = response.data;
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+
+            router.push("/")
 
         } catch (error: any) {
             setError("email", { type: "manual", message: error.response.data.message });

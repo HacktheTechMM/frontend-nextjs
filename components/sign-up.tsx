@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -26,7 +26,7 @@ const signUpSchema = z.object({
 
 export default function RegisterPage() {
 
-
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
         resolver: zodResolver(signUpSchema),
@@ -48,7 +48,7 @@ export default function RegisterPage() {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 
-
+            router.push("/")
 
         } catch (error: any) {
 
