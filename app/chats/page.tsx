@@ -41,7 +41,7 @@ export default function ChatDemo(props: ChatDemoProps) {
   return (
     <div className={cn("flex", "flex-col", "h-[650px]", "w-full",'mt-5')}>
       <Chat
-        className="grow"
+        className="grow px-4"
         messages={messages}
         handleSubmit={handleSubmit}
         input={input}

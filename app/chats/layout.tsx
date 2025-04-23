@@ -1,7 +1,7 @@
 'use client'
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
+import { Calendar, Home, Inbox, Search, Settings, BotMessageSquare } from "lucide-react"
+import { usePathname } from "next/navigation"
 import {
     Sidebar,
     SidebarContent,
@@ -20,37 +20,31 @@ import Link from "next/link"
 
 // Menu items.
 const items = [
-    {
-        title: "Talk with Ai",
-        url: "/chats",
-        icon: Home,
-    },
-    {
-        title: "Test",
-        url: "/test",
-        icon: Inbox,
-    },
-    {
-        title: "Discussion",
-        url: "/discussion",
-        icon: Calendar,
-    },
-    {
-        title: "Mentorship",
-        url: "/chats/mentorship",
-        icon: Calendar,
-    },
-    {
-        title: "Search",
-        url: "/search",
-        icon: Search,
-    },
-
-    {
-        title: "Settings",
-        url: "/settings",
-        icon: Settings,
-    },
+  {
+    title: "AI Mentor",
+    url: "/chats",
+    icon: BotMessageSquare,
+  },
+  {
+    title: "Test",
+    url: "/test",
+    icon: Inbox,
+  },
+  {
+    title: "Discussion",
+    url: "/discussion",
+    icon: Calendar,
+  },
+  {
+    title: "Search",
+    url: "/search",
+    icon: Search,
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
 ]
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
@@ -94,51 +88,51 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                 {children}
             </div>
 
-            {/* Desktop Sidebar (shown on md screens and above) */}
-            <SidebarProvider className="hidden md:flex md:mt-20 md:space-x-5">
-                <div className="flex flex-col h-auto">
-                    <Sidebar collapsible="icon" className="rounded-2xl overflow-hidden mt-20">
-                        <SidebarContent>
-                            <SidebarGroup>
-                                <SidebarGroupLabel className="text-xl font-bold mb-5">
-                                    Learn With Us
-                                </SidebarGroupLabel>
-                                <SidebarGroupContent>
-                                    <SidebarMenu>
-                                        {items.map((item) => {
-                                            const isActive = pathname === item.url ||
-                                                (item.url !== '/' && pathname.startsWith(item.url))
-                                            return (
-                                                <SidebarMenuItem key={item.title}>
-                                                    <Button
-                                                        variant="ghost"
-                                                        className={cn(
-                                                            "w-full dark:bg-accent dark:text-white dark:hover:bg-accent/80 p-5.5 mb-6 justify-start",
-                                                            isActive && "bg-gray-300 hover:bg-gray-400 dark:bg-primary dark:text-black dark:hover:bg-primary/80"
-                                                        )}
-                                                    >
-                                                        <item.icon className={cn(isActive && "text-black")} />
-                                                        <span className={cn("ml-2", isActive && "font-semibold")}>
-                                                            {item.title}
-                                                        </span>
-                                                    </Button>
-                                                </SidebarMenuItem>
-                                            )
-                                        })}
-                                    </SidebarMenu>
-                                </SidebarGroupContent>
-                            </SidebarGroup>
-                        </SidebarContent>
-                        <SidebarFooter className="mt-auto mb-20">
-                            <SideBarNavUser
-                                user={{
-                                    name: "User Name",
-                                    email: "user@example.com",
-                                    avatar: "path/to/avatar.jpg"
-                                }}
-                            />
-                        </SidebarFooter>
-                    </Sidebar>
+      {/* Desktop Sidebar (shown on md screens and above) */}
+      <SidebarProvider className="hidden md:flex md:mt-20 md:space-x-5">
+        <div className="flex flex-col h-auto">
+          <Sidebar collapsible="icon" className="rounded-2xl overflow-hidden mt-20">
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-xl font-bold mb-5">
+                  Learn With Us
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {items.map((item) => {
+                      const isActive = pathname === item.url ||
+                        (item.url !== '/' && pathname.startsWith(item.url))
+                      return (
+                        <SidebarMenuItem key={item.title}>
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "cursor-pointer w-full dark:bg-accent dark:text-white dark:hover:bg-accent/80 p-5.5 mb-3 justify-start",
+                              isActive && "bg-gray-300 hover:bg-gray-400 dark:bg-primary dark:text-black dark:hover:bg-primary/80"
+                            )}
+                          >
+                            <item.icon className={cn(isActive && "text-black")} />
+                            <span className={cn("ml-2", isActive && "font-semibold")}>
+                              {item.title}
+                            </span>
+                          </Button>
+                        </SidebarMenuItem>
+                      )
+                    })}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter className="mt-auto mb-20">
+              <SideBarNavUser
+                user={{
+                  name: "User Name",
+                  email: "user@example.com",
+                  avatar: "path/to/avatar.jpg"
+                }}
+              />
+            </SidebarFooter>
+          </Sidebar>
 
                 </div>
                 <div className="flex-1 overflow-auto ">
