@@ -1,10 +1,29 @@
+"use client"
+
 import { LogoIcon } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import { redirect} from 'next/navigation'
+
 
 export default function RegisterPage() {
+
+
+       
+
+
+    const handleSocialAuth = (provider: string) => {
+        try {
+            // TODO:: to add href link to redirect callback
+            window.location.href = `http://127.0.0.1:8000/auth/${provider}/redirect`;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
     return (
         <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
             <form
@@ -93,7 +112,7 @@ export default function RegisterPage() {
                             />
                         </div>
 
-                        <Button className="w-full">Sign In</Button>
+                        <Button className="w-full" onClick={()=>redirect("/login")}>Sign In</Button>
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -105,7 +124,9 @@ export default function RegisterPage() {
                     <div className="grid grid-cols-2 gap-3">
                         <Button
                             type="button"
-                            variant="outline">
+                            variant="outline"
+                            onClick={() => handleSocialAuth('google')}
+                            >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="0.98em"
@@ -128,26 +149,10 @@ export default function RegisterPage() {
                         </Button>
                         <Button
                             type="button"
-                            variant="outline">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 256 256">
-                                <path
-                                    fill="#f1511b"
-                                    d="M121.666 121.666H0V0h121.666z"></path>
-                                <path
-                                    fill="#80cc28"
-                                    d="M256 121.666H134.335V0H256z"></path>
-                                <path
-                                    fill="#00adef"
-                                    d="M121.663 256.002H0V134.336h121.663z"></path>
-                                <path
-                                    fill="#fbbc09"
-                                    d="M256 256.002H134.335V134.336H256z"></path>
-                            </svg>
-                            <span>Microsoft</span>
+                            variant="outline"
+                            onClick={() => handleSocialAuth('github')}>
+                            <img src={"/github.svg"} alt="github" className="w-4 h-4" />
+                            <span>Github</span>
                         </Button>
                     </div>
                 </div>
