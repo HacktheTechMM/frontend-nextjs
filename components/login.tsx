@@ -10,21 +10,43 @@ import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 const loginSchema = z.object({
     email: z.string().email("Please enter a valid email"),
     password: z.string().min(1, "Password is required")
 });
 
+
+
 export default function LoginPage() {
 
-    const { register, handleSubmit, formState: { errors }, reset ,setError} = useForm({
+
+
+    const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
         resolver: zodResolver(loginSchema),
         mode: 'onBlur'
     });
 
-    const onSubmit=async (data:any)=>{
-       
+
+    const onSubmit = async (data: any) => {
+
+
+        try {
+            let response = await axios.post(`http://127.0.0.1:8000/api/v1/auth/signin`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            let { token, user } = response.data;
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+        } catch (error: any) {
+            setError("email", { type: "manual", message: error.response.data.message });
+
+        }
     }
 
 
@@ -86,7 +108,7 @@ export default function LoginPage() {
                             variant="outline"
                             onClick={() => handleSocialAuth('github')}
                         >
-                           <img src={"/github.svg"} alt='github' className="w-4 h-4" />
+                            <img src={"/github.svg"} alt='github' className="w-4 h-4" />
                             <span>Github</span>
                         </Button>
                     </div>
@@ -104,8 +126,14 @@ export default function LoginPage() {
                                 type="email"
                                 required
                                 id="email"
-                                {...register("email")}  
+                                {...register("email")}
                             />
+
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                            )}
+
+
                         </div>
 
                         <div className="space-y-0.5">
@@ -133,9 +161,13 @@ export default function LoginPage() {
                                 className="input sz-md variant-mixed"
                                 {...register("password")}
                             />
+
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                            )}
                         </div>
 
-                        <Button className="w-full" onClick={()=>redirect("/signup")}>Sign In</Button>
+                        <Button type="submit" className="w-full" >Sign In</Button>
                     </div>
                 </div>
 
@@ -146,7 +178,7 @@ export default function LoginPage() {
                             asChild
                             variant="link"
                             className="px-2">
-                            <Link href="#">Create account</Link>
+                            <Link href="/signup">Create account</Link>
                         </Button>
                     </p>
                 </div>
