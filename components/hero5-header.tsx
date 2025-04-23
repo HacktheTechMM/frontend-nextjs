@@ -18,7 +18,7 @@ const menuItems = [
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    const [user] = useState(true)
+    let token = localStorage.getItem('token');
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -26,6 +26,8 @@ export const HeroHeader = () => {
         }
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
+
+        
     }, [])
     return (
         <header>
@@ -81,7 +83,7 @@ export const HeroHeader = () => {
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                                 <ThemeToggle />
-                                {user ? (
+                                { token ? (
                                     <>
                                        <UserDropdown />
                                     </>
@@ -91,7 +93,7 @@ export const HeroHeader = () => {
                                         variant="outline"
                                         size="sm"
                                         className={cn(isScrolled && 'lg:hidden')}>
-                                        <Link href="#">
+                                        <Link href="/login">
                                             <span>Login</span>
                                         </Link>
                                     </Button>
@@ -99,7 +101,7 @@ export const HeroHeader = () => {
                                         asChild
                                         size="sm"
                                         className={cn(isScrolled && 'lg:hidden')}>
-                                        <Link href="#">
+                                        <Link href="/signup">
                                             <span>Sign Up</span>
                                         </Link>
                                     </Button>

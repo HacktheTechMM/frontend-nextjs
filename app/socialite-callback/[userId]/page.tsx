@@ -8,7 +8,8 @@ const page = () => {
     const params = useParams();
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
-
+    const message = searchParams.get('message');
+    
     useEffect(() => {
         const userId = params.userId as string;
         if (userId && token) {
@@ -17,6 +18,7 @@ const page = () => {
             redirect('/');
         }else{
             redirect('/login');
+            localStorage.setItem("socialAuthMessage",message as string);
         }
     }, []);
 
