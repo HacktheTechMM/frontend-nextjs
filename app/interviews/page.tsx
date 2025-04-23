@@ -1,12 +1,17 @@
+"use client"
 import { Button } from '@/components/ui/button'
-import { dummyInterviews } from '@/constants'
-import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import InterviewCard from './_components/InterviewCard'
+import { getCurrentUser } from '@/lib/utils'
+import { getInterviewsByUserId } from '@/lib/actions/interview.action'
 
-const Interviewspage = () => {
+const Interviewspage = async () => { 
+    const user = await getCurrentUser();
+    console.log("user is here",user)
+    const userInterviews = await getInterviewsByUserId(user?.id)
+
     return (
         <>
             <section className="flex flex-row bg-gradient-to-b from-[#171532] to-[#08090D] rounded-3xl px-16 items-center justify-between max-sm:px-4">
@@ -35,7 +40,7 @@ const Interviewspage = () => {
                 <h2 className='text-2xl font-bold font-mono'>Your Interviews</h2>
 
                 <div className="flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch">
-                    {/* {hasPastInterviews ? (
+                    {userInterviews?.length ? (
                         userInterviews?.map((interview) => (
                             <InterviewCard
                                 key={interview.id}
@@ -49,8 +54,8 @@ const Interviewspage = () => {
                         ))
                     ) : (
                         <p>You haven&apos;t taken any interviews yet</p>
-                    )} */}
-                    {dummyInterviews.map((internive) => (
+                    )}
+                    {/* {dummyInterviews.map((internive) => (
                         <InterviewCard 
                             key={internive.id}
                             userId={internive.userId}
@@ -60,7 +65,7 @@ const Interviewspage = () => {
                             techstack={internive.techstack}
                             createdAt={internive.createdAt}
                         />
-                    ))}
+                    ))} */}
                 </div>
             </section>
 

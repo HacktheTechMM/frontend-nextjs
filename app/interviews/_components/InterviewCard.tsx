@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
+import { getFeedbackByInterviewId } from "@/lib/actions/interview.action";
 import DisplayTechIcons from "./DisplayTechIcons";
 import { Button } from '@/components/ui/button';
 
