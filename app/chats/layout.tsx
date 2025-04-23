@@ -1,7 +1,7 @@
 'use client'
 
 import { Calendar, Home, Inbox, Search, Settings, BotMessageSquare } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
     Sidebar,
     SidebarContent,
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { SideBarNavUser } from "./components/sidebar-nav-user"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+
 
 // Menu items.
 const items = [
