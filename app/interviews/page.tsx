@@ -1,16 +1,33 @@
-"use client"
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
-import InterviewCard from './_components/InterviewCard'
-import { getCurrentUser } from '@/lib/utils'
-import { getInterviewsByUserId } from '@/lib/actions/interview.action'
+"use client";
 
-const Interviewspage = async () => { 
-    const user = await getCurrentUser();
-    console.log("user is here",user)
-    const userInterviews = await getInterviewsByUserId(user?.id)
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { useEffect } from 'react';
+import InterviewCard from './_components/InterviewCard';
+import { useAppSelector, useAppDispatch } from '@/redux/store';
+import { fetchUserInterviews } from '@/redux/slices/interviewSlice';
+// import { fetchUserInterviews } from '@/redux/features/interviewSlice';
+
+const Interviewspage = () => {
+    const user = useAppSelector((state) => state.user.current);
+    const { interviews, loading, error } = useAppSelector((state) => state.interviews);
+    const dispatch = useAppDispatch();
+    console.log(interviews)
+
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(fetchUserInterviews(user.id));
+        }
+    }, [user?.id, dispatch]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500">Error: {error}</div>;
+    }
 
     return (
         <>
@@ -35,13 +52,12 @@ const Interviewspage = async () => {
                 />
             </section>
 
-
             <section className="flex flex-col gap-6 mt-8">
                 <h2 className='text-2xl font-bold font-mono'>Your Interviews</h2>
 
                 <div className="flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch">
-                    {userInterviews?.length ? (
-                        userInterviews?.map((interview) => (
+                    {interviews?.length ? (
+                        interviews.map((interview:any) => (
                             <InterviewCard
                                 key={interview.id}
                                 userId={user?.id}
@@ -55,23 +71,10 @@ const Interviewspage = async () => {
                     ) : (
                         <p>You haven&apos;t taken any interviews yet</p>
                     )}
-                    {/* {dummyInterviews.map((internive) => (
-                        <InterviewCard 
-                            key={internive.id}
-                            userId={internive.userId}
-                            interviewId={internive.id}
-                            role={internive.role}
-                            type={internive.type}
-                            techstack={internive.techstack}
-                            createdAt={internive.createdAt}
-                        />
-                    ))} */}
                 </div>
             </section>
-
-
         </>
-    )
-}
+    );
+};
 
-export default Interviewspage
+export default Interviewspage;

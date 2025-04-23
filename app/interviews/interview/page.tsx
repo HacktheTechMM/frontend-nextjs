@@ -1,13 +1,13 @@
-
-import { getCurrentUser } from "@/lib/utils";
+"use client"
+import { useAppSelector } from "@/redux/store";
 import Agent from "../_components/Agent";
 
-const Page = async () => {
-  const user = await getCurrentUser();
+const Page =  () => {
+  const user = useAppSelector(state => state.user.current)
 
   return (
     <>
-      <h3>Interview generation</h3>
+      <h3 className="text-2xl font-mona font-bold mt-12">Interview generation</h3>
 
       <Agent
         userName={user?.name!}

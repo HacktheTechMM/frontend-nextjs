@@ -18,6 +18,11 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
+import { ReduxProvider } from "@/redux/provider";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchUser } from "@/redux/slices/userSlice";
+import AuthLoader from "@/components/AuthLoader";
 
 export default function RootLayout({
   children,
@@ -26,25 +31,36 @@ export default function RootLayout({
 }>) {
 
   //get current user
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // const token = localStorage.getItem('token') // or wherever you store your token
+  // useEffect(() => {
+  //   const fetchUser = async () => {
 
-        const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/me', {
-          headers: {
-            Authorization: `Bearer 4|EBNVAW4issHBQwxNM7hnWn3yk1KelDufFdshcmlr50dda830`,
-          },
-        })
+  //     const token = localStorage.getItem('token');
 
-        console.log('current user',response.data)
-      } catch (error) {
-        console.error('Error fetching user:', error)
-      }
-    }
+  //     if (!token) {
+  //       console.warn('No token found');
+  //       return;
+  //     }
 
-    fetchUser()
-  }, [])
+  //     try {
+  //       // const token = localStorage.getItem('token') // or wherever you store your token
+
+  //       const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/me', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+
+  //       console.log('current user', response.data)
+  //     } catch (error) {
+  //       console.error('Error fetching user:', error)
+  //     }
+  //   }
+
+  //   fetchUser()
+  // }, [])
+
+
+
 
   return (
     <html lang="en" suppressHydrationWarning className="dark">
@@ -55,11 +71,14 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          // disableTransitionOnChange
+        // disableTransitionOnChange
         >
-          <HeroHeader />
-          {children}
-          {/* <FooterSection /> */}
+          <ReduxProvider>
+            <AuthLoader />
+            <HeroHeader />
+            {children}
+            {/* <FooterSection /> */}
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>

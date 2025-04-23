@@ -1,7 +1,7 @@
 'use client'
 
 import { Calendar, Home, Inbox, Search, Settings, BotMessageSquare } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
     Sidebar,
     SidebarContent,

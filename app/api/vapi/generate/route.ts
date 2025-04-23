@@ -44,7 +44,10 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      }); 
+      console.log("api",response)
+      console.log("api",response.data)
+
       return response.data;
     } catch (error: any) {
       console.error("Error storing interview:", error.response?.data || error.message);

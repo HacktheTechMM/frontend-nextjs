@@ -116,6 +116,7 @@ export async function getInterviewsByUserId(
         'Content-Type': 'application/json',
       },
     });
+    console.log("get user inteview",response)
     return response.data;
   } catch (error: any) {
     console.error("Error fetching interviews:", error.response?.data || error.message);
