@@ -15,8 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { UserProvider } from "@/context/UserContext";
 
