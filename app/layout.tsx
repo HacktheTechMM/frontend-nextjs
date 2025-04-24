@@ -17,11 +17,7 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
-import { ReduxProvider } from "@/redux/provider";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { fetchUser } from "@/redux/slices/userSlice";
-import AuthLoader from "@/components/AuthLoader";
+
 import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
@@ -36,21 +32,21 @@ export default function RootLayout({
       try {
         const token = localStorage.getItem('token') // or wherever you store your token
         console.log('token',token);
-        
+
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
           headers: {
             Authorization: `Bearer 6|wpfktmdARlGdGdKVmtGKlZCmVxGPXPHQ5x847vJf52dc8eb1`,
           },
         })
 
-  //       console.log('current user', response.data)
-  //     } catch (error) {
-  //       console.error('Error fetching user:', error)
-  //     }
-  //   }
+        console.log('current user', response.data)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
 
-  //   fetchUser()
-  // }, [])
+    fetchUser()
+  }, [])
 
 
 
@@ -66,13 +62,10 @@ export default function RootLayout({
           enableSystem
         // disableTransitionOnChange
         >
-          <ReduxProvider>
-            <AuthLoader />
             <HeroHeader />
             {children}
             <Toaster/>
           {/* <FooterSection /> */}
-          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>
