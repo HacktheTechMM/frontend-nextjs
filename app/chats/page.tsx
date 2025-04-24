@@ -24,12 +24,17 @@ import {
   Layers,
   Code,
   Loader2,
+  PanelRightOpen,
+  Map,
+  SquareMinus,
 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { useTheme } from "next-themes"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+import { Drawer } from "@/components/ui/drawer"
+import { DrawerContent } from "@/components/ui/drawer"
 
 // Define roadmap step type
 type RoadmapStep = {
@@ -58,6 +63,8 @@ export default function MentorPage() {
   const [userLevel, setUserLevel] = useState<string>("")
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState<boolean>(false)
   const [retryCount, setRetryCount] = useState<number>(0)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
 
   // Custom chat hook with initial welcome message
   const { messages, input, handleInputChange, setMessages, setInput, isLoading } = useChat({
@@ -204,6 +211,8 @@ export default function MentorPage() {
         },
       ])
 
+      setDrawerOpen(true) // Open the drawer when the roadmap is ready
+
       setConversationStage("roadmap")
       setRetryCount(0) // Reset retry count on success
     } catch (error) {
@@ -257,7 +266,7 @@ export default function MentorPage() {
 
   const fetchStepDetail = async (step: RoadmapStep | null, message: any) => {
     console.log('current step', currentStep)
-    
+
     try {
       setMessages((prev) => [
         ...prev,
@@ -286,7 +295,7 @@ export default function MentorPage() {
         }),
       })
 
-      
+
 
       if (!response.ok) {
         throw new Error(`Failed to fetch step detail: ${response.status}`)
@@ -427,7 +436,7 @@ export default function MentorPage() {
     const updatedRoadmap = {
       ...roadmap,
       steps: roadmap.steps.map((step) =>
-      step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
+        step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
       ),
     }
 
@@ -511,8 +520,18 @@ export default function MentorPage() {
                 <Sparkles className="h-5 w-5 text-primary" />
                 <span>AI Learning Mentor</span>
               </CardTitle>
+              {/* Start Over Button */}
+              <Button
+                variant="destructive"
+                size="sm"
+                className="shadow-md cursor-pointer "
+                onClick={() => {
+                }}
+              >
+                Start Over
+                <SquareMinus> </SquareMinus>
+              </Button>
 
-              
             </div>
           </CardHeader>
 
@@ -625,8 +644,132 @@ export default function MentorPage() {
         </Card>
       </div>
 
+
+
+      {/* roadmap drawer open button  */}
+      <Button
+        variant="default"
+        size="icon"
+        className="fixed right-1 top-1/2 transform -translate-y-1/2 z-50 shadow-lg rounded-md md:hidden"
+        onClick={() => setDrawerOpen(true)}
+      >
+        <Map className="h-10 w-10" />
+      </Button>
+
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
+        <DrawerContent className="w-full max-w-md ml-auto h-full md:hidden">
+          {/* Your roadmap sidebar content here */}
+          <div className="h-full flex flex-col">
+            {/* Top part */}
+            <div className="p-4 border-b">
+              <h2 className="text-xl font-semibold">{roadmap?.title || "Your Learning Journey"}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {roadmap?.description || "Your personalized learning path will appear here"}
+              </p>
+
+              {roadmap && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <Badge variant="outline" className="bg-primary/10">
+                    {roadmap.difficulty_level}
+                  </Badge>
+                  <Badge variant="outline" className="bg-secondary/10">
+                    {roadmap.language}
+                  </Badge>
+                </div>
+              )}
+
+              <div className="mt-4 space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span>Progress</span>
+                  <span className="font-medium">{progress}%</span>
+                </div>
+                <Progress value={progress} className="h-2" />
+              </div>
+            </div>
+
+            {/* Steps / content */}
+            <div className="flex-1 overflow-y-auto">
+              {roadmap ? (
+                <div className="p-4 space-y-4 ">
+                  {roadmap.steps.map((step) => (
+                    <div
+                      key={step.step_number}
+                      className={`border rounded-lg p-4 transition-all ${step.completed ? "bg-primary/5 border-primary/20" : "hover:border-primary/30 hover:bg-background"
+                        }`}
+                    >
+                      <div
+                        className="flex items-start gap-3 cursor-pointer"
+                        onClick={() => toggleStepCompletion(step.step_number)}
+                      >
+                        <div className="mt-0.5 text-primary flex-shrink-0">
+                          {step.completed ? (
+                            <div className="relative">
+                              <CheckCircle className="h-6 w-6 text-primary" />
+                              <div
+                                className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-75"
+                                style={{ animationDuration: "1s", animationIterationCount: 1 }}
+                              ></div>
+                            </div>
+                          ) : (
+                            <Circle className="h-6 w-6 text-primary/40" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 rounded-md bg-primary/10 text-primary">{getStepIcon(step.title)}</div>
+                            <div className={`font-medium text-base ${step.completed ? "text-primary" : ""}`}>
+                              {step.step_number}. {step.title}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center mt-2">
+                            {step.estimated_time_minutes > 0 && (
+                              <Badge variant="outline" className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {formatTime(step.estimated_time_minutes)}
+                              </Badge>
+                            )}
+                          </div>
+
+                          <p className={`text-sm mt-2 ${step.completed ? "text-muted-foreground" : ""}`}>
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-center p-4">
+                  <div className="max-w-xs space-y-4">
+                    {isLoadingRoadmap ? (
+                      <>
+                        <Loader2 className="h-12 w-12 text-primary/60 mx-auto animate-spin" />
+                        <h3 className="text-lg font-medium">Creating your roadmap...</h3>
+                        <p className="text-sm text-muted-foreground">
+                          I'm designing a personalized learning path just for you.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-12 w-12 text-primary/60 mx-auto" />
+                        <h3 className="text-lg font-medium">Your roadmap is coming</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Tell me what you want to learn and your experience level, and I'll create a personalized
+                          learning roadmap for you.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
       {/* Roadmap sidebar - on the right with enhanced checklist */}
-      <div className={`w-full md:w-96 border-l ${roadmapVisible ? "block" : "hidden md:block"}`}>
+      <div className={`w-full md:w-96 border-l hidden md:block`}>
         <div className="h-full flex flex-col">
           <div className="p-4 border-b">
             <h2 className="text-xl font-semibold">{roadmap?.title || "Your Learning Journey"}</h2>
@@ -656,7 +799,7 @@ export default function MentorPage() {
 
           <div className="flex-1 overflow-y-auto">
             {roadmap ? (
-              <div className="p-4 space-y-4 h-[70vh]">
+              <div className="p-4 space-y-4 ">
                 {roadmap.steps.map((step) => (
                   <div
                     key={step.step_number}
