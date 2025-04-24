@@ -130,30 +130,32 @@ const getStatusColor = (status: string) => {
 
 
 export default function TableDemo() {
+
   return (
-    <Table className="max-w-5xl mt-20 mx-auto border-separate border-spacing-y-10">
-      <TableCaption>Your's Mentor Request List</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">MentorName</TableHead>
-          <TableHead>SubjectName</TableHead>
-          <TableHead>RequestTime</TableHead>
-          <TableHead className="text-right">Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {mentorRequests.map((mentor) => (
-          <TableRow key={mentor.id} className="">
-            <TableCell className="font-medium">{mentor.mentor_name}</TableCell>
-            <TableCell>{mentor.subject_name}</TableCell>
-            <TableCell>{formatRequestedTime(mentor.requested_time)}</TableCell>
-            <TableCell className={`text-right`}>{mentor.status}</TableCell>
+      <Table className="max-w-5xl mt-20 mx-auto border-separate border-spacing-y-10">
+        <TableCaption>Your's Mentor Request List</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">MentorName</TableHead>
+            <TableHead>SubjectName</TableHead>
+            <TableHead>RequestTime</TableHead>
+            <TableHead className="text-right">Status</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {mentorRequests.map((mentor) => (
+            <TableRow key={mentor.id} className="">
+              <TableCell className="font-medium">{mentor.mentor_name}</TableCell>
+              <TableCell>{mentor.subject_name}</TableCell>
+              <TableCell>{formatRequestedTime(mentor.requested_time)}</TableCell>
+              <TableCell className={`text-right`}>{mentor.status}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+
+        </TableFooter>
+      </Table>
+  
   )
 }

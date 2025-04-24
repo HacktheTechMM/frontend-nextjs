@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
+
 import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
@@ -30,7 +31,7 @@ export default function RootLayout({
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem('token') // or wherever you store your token
-        console.log('token', token);
+        console.log('token',token);
 
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
           headers: {
@@ -61,9 +62,9 @@ export default function RootLayout({
           enableSystem
         // disableTransitionOnChange
         >
-          <HeroHeader />
-          {children}
-          <Toaster />
+            <HeroHeader />
+            {children}
+            <Toaster/>
           {/* <FooterSection /> */}
         </ThemeProvider>
       </body>
