@@ -9,13 +9,15 @@ import { ArrowLeft, ArrowRight, CheckCircle, XCircle, Loader2 } from "lucide-rea
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 // Define the question type based on the API response
 interface QuizQuestion {
   id: number
   question: string
   options: string[]
-  correctAnswer: string
+  correctAnswer: string 
+  explainAnswer: string
 }
 
 export default function QuizQuestionsPage() {
@@ -249,6 +251,29 @@ export default function QuizQuestionsPage() {
                         {userAnswers[index] !== correctAnswerIndex && (
                           <p className="text-sm text-green-600 mt-1">Correct answer: {question.correctAnswer}</p>
                         )}
+
+                        {/* Add the explanation section */}
+                        <Collapsible>
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="h-auto p-0 mt-2 text-sm text-muted-foreground hover:text-primary"
+                            >
+                              {question.explainAnswer ? "Show explanation" : ""}
+                            </Button>
+                          </CollapsibleTrigger>
+                          {question.explainAnswer && (
+                            <CollapsibleContent className="mt-2">
+                              <div className="p-3 bg-muted/50 rounded-md">
+                                <p className="text-sm font-medium text-foreground">Explanation:</p>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {question.explainAnswer}
+                                </p>
+                              </div>
+                            </CollapsibleContent>
+                          )}
+                        </Collapsible>
                       </div>
                     </div>
                   </div>
@@ -289,12 +314,11 @@ export default function QuizQuestionsPage() {
           <CardTitle className="text-xl">{currentQuestion.question}</CardTitle>
         </CardHeader>
         <CardContent>
-          <RadioGroup value={selectedAnswer?.toString()} className="space-y-3">
+          <RadioGroup value={selectedAnswer?.toString()} className="space-y-5">
             {currentQuestion.options.map((option, index) => (
               <div
                 key={index}
-                className={`flex items-center space-x-2 p-3 rounded-md border cursor-pointer transition-colors ${
-                  isAnswerSubmitted
+                className={`flex items-center space-x-2 p-6 rounded-md border cursor-pointer transition-colors ${isAnswerSubmitted
                     ? index === correctAnswerIndex
                       ? "border-green-500 bg-green-50 dark:bg-green-900/20"
                       : selectedAnswer === index
@@ -303,7 +327,7 @@ export default function QuizQuestionsPage() {
                     : selectedAnswer === index
                       ? "border-primary"
                       : "hover:bg-muted"
-                }`}
+                  }`}
                 onClick={() => handleAnswerSelect(index)}
               >
                 <RadioGroupItem value={index.toString()} id={`option-${index}`} disabled={isAnswerSubmitted} />
