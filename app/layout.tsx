@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
-
 import { Toaster } from "@/components/ui/toaster";
+import { UserProvider } from "@/context/UserContext";
 
 export default function RootLayout({
   children,
@@ -26,27 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  //get current user
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem('token') // or wherever you store your token
-        console.log('token',token);
-
-        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
-          headers: {
-            Authorization: `Bearer 6|wpfktmdARlGdGdKVmtGKlZCmVxGPXPHQ5x847vJf52dc8eb1`,
-          },
-        })
-
-        console.log('current user', response.data)
-      } catch (error) {
-        console.error('Error fetching user:', error)
-      }
-    }
-
-    fetchUser()
-  }, [])
 
 
 
@@ -56,17 +35,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-        // disableTransitionOnChange
-        >
-            <HeroHeader />
-            {children}
-            <Toaster/>
-          {/* <FooterSection /> */}
-        </ThemeProvider>
+        <UserProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+          // disableTransitionOnChange
+          >
+              <HeroHeader />
+              {children}
+              <Toaster/>
+            {/* <FooterSection /> */}
+          </ThemeProvider>
+        </UserProvider>
       </body>
     </html>
   );
