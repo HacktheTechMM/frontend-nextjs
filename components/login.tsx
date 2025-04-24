@@ -38,8 +38,9 @@ export default function LoginPage() {
                     'Content-Type': 'application/json',
                 },
             });
+            
 
-            let { token, user } = response.data;
+            let { token, user } = response.data.data;
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 

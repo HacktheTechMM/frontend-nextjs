@@ -1,7 +1,6 @@
 'use client'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import FooterSection from "@/components/footer";
 import { HeroHeader } from "@/components/hero5-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import axios from "axios";
@@ -18,6 +17,7 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -29,11 +29,12 @@ export default function RootLayout({
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // const token = localStorage.getItem('token') // or wherever you store your token
-
+        const token = localStorage.getItem('token') // or wherever you store your token
+        console.log('token',token);
+        
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
           headers: {
-            Authorization: `Bearer 4|EBNVAW4issHBQwxNM7hnWn3yk1KelDufFdshcmlr50dda830`,
+            Authorization: `Bearer 6|wpfktmdARlGdGdKVmtGKlZCmVxGPXPHQ5x847vJf52dc8eb1`,
           },
         })
 
@@ -59,6 +60,7 @@ export default function RootLayout({
         >
           <HeroHeader />
           {children}
+          <Toaster/>
           {/* <FooterSection /> */}
         </ThemeProvider>
       </body>
