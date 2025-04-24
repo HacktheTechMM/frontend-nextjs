@@ -53,7 +53,7 @@ type Roadmap = {
 
 export default function MentorPage() {
   // State for conversation flow
-  const [conversationStage, setConversationStage] = useState<"initial" | "topic" | "level" | "roadmap">("initial")
+  const [conversationStage, setConversationStage] = useState<"initial" | "topic" | "level" | "roadmap" | "step-detail">("initial")
   const [userTopic, setUserTopic] = useState<string>("")
   const [userLevel, setUserLevel] = useState<string>("")
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState<boolean>(false)
@@ -77,6 +77,7 @@ export default function MentorPage() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [roadmap, setRoadmap] = useState<Roadmap | null>(null)
+  const [currentStep, setCurrentStep] = useState<RoadmapStep | null>(null)
 
   // Only show theme toggle after hydration to avoid mismatch
   useEffect(() => {
@@ -165,8 +166,6 @@ export default function MentorPage() {
 
       const data = await response.json()
 
-      console.log('ai response', data)
-
       // Parse the roadmap data
       let roadmapData: Roadmap
 
@@ -189,14 +188,15 @@ export default function MentorPage() {
       }))
 
       setRoadmap(roadmapData)
+      setCurrentStep(roadmapData.steps[0])
       setRoadmapVisible(true)
 
       // Save roadmap to backend
-      saveRoadmapToBackend(roadmapData)
+      // saveRoadmapToBackend(roadmapData)
 
       // Add success message
       setMessages((prev) => [
-        ...prev.filter((m) => m.id !== "loading-roadmap"), // Remove loading message
+        ...prev.filter((m) => m.id !== "loading-roadmap" && m.id !== 'loading-detail'), // Remove loading message
         {
           id: "roadmap-ready",
           role: "assistant",
@@ -233,7 +233,7 @@ export default function MentorPage() {
 
       // Add message about using fallback
       setMessages((prev) => [
-        ...prev.filter((m) => m.id !== "loading-roadmap"), // Remove loading message
+        ...prev.filter((m) => m.id !== "loading-roadmap" && m.id !== "loading-detail"), // Remove loading message
         {
           id: "roadmap-fallback",
           role: "assistant",
@@ -252,6 +252,61 @@ export default function MentorPage() {
       })
     } finally {
       setIsLoadingRoadmap(false)
+    }
+  }
+
+  const fetchStepDetail = async (step: RoadmapStep | null, message: any) => {
+    console.log('current step', currentStep)
+    
+    try {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: "loading-detail",
+          role: "assistant",
+          content: "Fetching information... Please hold on.",
+        },
+      ])
+
+      const prompt = JSON.stringify({
+        title: step?.title,
+        description: step?.description,
+        message: message,
+      })
+
+      const response = await fetch('/api/roadmap/steps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          input: {
+            input: prompt,
+          },
+        }),
+      })
+
+      
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch step detail: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      // Add success message
+      setMessages((prev) => [
+        ...prev.filter((m) => m.id !== "loading-roadmap" && m.id !== "loading-detail"), // Remove loading message
+        {
+          id: `step-detail-${Date.now()}`,
+          role: "assistant",
+          content: data.output.content,
+        },
+      ])
+      return data
+    } catch (error) {
+      console.error('Error fetching step detail:', error)
+      throw error
     }
   }
 
@@ -372,14 +427,17 @@ export default function MentorPage() {
     const updatedRoadmap = {
       ...roadmap,
       steps: roadmap.steps.map((step) =>
-        step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
+      step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
       ),
     }
+
+    const nextStep = updatedRoadmap.steps.find((step) => !step.completed) || null
+    setCurrentStep(nextStep)
 
     setRoadmap(updatedRoadmap)
 
     // Update progress in backend
-    updateProgressInBackend(updatedRoadmap)
+    // updateProgressInBackend(updatedRoadmap)
   }
 
   // Custom submit handler
@@ -396,6 +454,13 @@ export default function MentorPage() {
         content: input,
       },
     ])
+
+    if (conversationStage == 'roadmap') {
+      // User ask detail information about current step
+
+      // Fetch roadmap from API
+      fetchStepDetail(currentStep, input);
+    }
 
     // Clear input
     setInput("")
@@ -451,8 +516,8 @@ export default function MentorPage() {
             </div>
           </CardHeader>
 
-          <CardContent className="p-0 flex-1 overflow-hidden">
-            <div className="h-full overflow-y-auto p-4 space-y-4">
+          <CardContent className="p-0  overflow-hidden">
+            <div className="h-[65vh] overflow-y-auto p-4 space-y-4">
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`flex gap-3 max-w-[85%] ${message.role === "user" ? "flex-row-reverse" : ""}`}>
@@ -591,7 +656,7 @@ export default function MentorPage() {
 
           <div className="flex-1 overflow-y-auto">
             {roadmap ? (
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-4 h-[70vh]">
                 {roadmap.steps.map((step) => (
                   <div
                     key={step.step_number}
