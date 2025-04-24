@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { HeroHeader } from "@/components/hero5-header";
 import { ThemeProvider } from "@/components/theme-provider";
-import axios from "axios";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +42,6 @@ export default function RootLayout({
               <HeroHeader />
               {children}
               <Toaster/>
-            {/* <FooterSection /> */}
           </ThemeProvider>
         </UserProvider>
       </body>

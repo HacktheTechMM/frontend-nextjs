@@ -1,9 +1,9 @@
 "use client"
 import FAQsThree from "@/components/faqs-3";
 import Features from "@/components/features-1";
+import FooterSection from "@/components/footer";
 import HeroSection from "@/components/hero-section";
 import IntegrationsSection from "@/components/integrations-5";
-import { useUser } from "@/context/UserContext";
 
 export default function Home() {
   return (
@@ -11,7 +11,8 @@ export default function Home() {
       <HeroSection />
       <Features />
       <IntegrationsSection />
-      <FAQsThree />
+      <FAQsThree /> 
+      <FooterSection />
     </>
   );
 }

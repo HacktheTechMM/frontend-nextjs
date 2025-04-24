@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { Calendar, Inbox, Settings, BotMessageSquare, NotebookPen, PanelLeftClose } from "lucide-react"
+import { Calendar, Inbox, Settings, BotMessageSquare, NotebookPen, PanelLeftClose, Code } from "lucide-react"
 import { usePathname } from "next/navigation"
 import {
     Sidebar,
@@ -34,13 +34,13 @@ const items = [
         title: "Test",
         url: "/chat/test",
         icon: Inbox,
-        matchPattern: "/chat/test",
+        matchPattern: "/chats/test",
     },
     {
         title: "Discussion",
-        url: "/chat/discussion",
+        url: "/chats/discussion",
         icon: Calendar,
-        matchPattern: "/chat/discussion",
+        matchPattern: "/chats/discussion",
     },
     {
         title: "Take Quizz",
@@ -49,10 +49,10 @@ const items = [
         matchPattern: "/chats/quizz",
     },
     {
-        title: "Settings",
-        url: "/settings",
-        icon: Settings,
-        matchPattern: "/settings",
+        title: "Code Test",
+        url: "/chats/code-test",
+        icon: Code,
+        matchPattern: "/chats/code-test",
     },
 ]
 
@@ -61,7 +61,7 @@ const CustomSidebarTrigger = () => {
     const { state, toggleSidebar } = useSidebar()
 
     return (
-        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="absolute top-4 right-4 z-10">
+        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="absolute top-4 right-0 z-10">
             <PanelLeftClose
                 className={cn("h-5 w-5 transition-transform duration-200", state === "collapsed" && "rotate-180")}
             />
@@ -76,21 +76,22 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     const isActive = (itemUrl: string, itemMatchPattern: string) => {
         // Exact match
         if (pathname === itemUrl) return true
-
-        // Nested route match (e.g., /chats/123 should match /chats)
-        if (itemUrl !== "/" && pathname.startsWith(itemUrl)) {
-            // Special case for /chats to not match /chats/quizz
-            if (itemUrl === "/chats" && pathname.startsWith("/chats/quizz")) {
-                return false
-            }
-            return true
+    
+        // Special case: Don't let /chats match everything under /chats/*
+        if (itemUrl === "/chats" && pathname.startsWith("/chats/")) {
+            return false
         }
-
+    
         // Match by pattern if provided
         if (itemMatchPattern && pathname.startsWith(itemMatchPattern)) {
             return true
         }
-
+    
+        // Nested route match for other cases (not /chats)
+        if (itemUrl !== "/" && pathname.startsWith(itemUrl)) {
+            return true
+        }
+    
         return false
     }
 
@@ -113,7 +114,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                                         active && "bg-gray-300 hover:bg-gray-400 dark:bg-primary dark:text-black dark:hover:bg-primary/80",
                                     )}
                                 >
-                                    <item.icon className={cn("h-5 w-5", active && "text-black")} />
+                                    <item.icon className={cn("h-5 w-5", active && "text-black dark:text-white")} />
                                     <span className="text-xs">{item.title}</span>
                                 </Button>
                             </Link>
