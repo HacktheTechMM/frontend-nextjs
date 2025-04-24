@@ -26,6 +26,7 @@ import {
   Loader2,
   PanelRightOpen,
   Map,
+  SquareMinus,
 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { useTheme } from "next-themes"
@@ -265,7 +266,7 @@ export default function MentorPage() {
 
   const fetchStepDetail = async (step: RoadmapStep | null, message: any) => {
     console.log('current step', currentStep)
-    
+
     try {
       setMessages((prev) => [
         ...prev,
@@ -294,7 +295,7 @@ export default function MentorPage() {
         }),
       })
 
-      
+
 
       if (!response.ok) {
         throw new Error(`Failed to fetch step detail: ${response.status}`)
@@ -435,7 +436,7 @@ export default function MentorPage() {
     const updatedRoadmap = {
       ...roadmap,
       steps: roadmap.steps.map((step) =>
-      step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
+        step.step_number === stepNumber ? { ...step, completed: !step.completed } : step,
       ),
     }
 
@@ -519,8 +520,18 @@ export default function MentorPage() {
                 <Sparkles className="h-5 w-5 text-primary" />
                 <span>AI Learning Mentor</span>
               </CardTitle>
+              {/* Start Over Button */}
+              <Button
+                variant="destructive"
+                size="sm"
+                className="shadow-md cursor-pointer "
+                onClick={() => {
+                }}
+              >
+                Start Over
+                <SquareMinus> </SquareMinus>
+              </Button>
 
-              
             </div>
           </CardHeader>
 
@@ -633,18 +644,20 @@ export default function MentorPage() {
         </Card>
       </div>
 
+
+
       {/* roadmap drawer open button  */}
       <Button
         variant="default"
         size="icon"
         className="fixed right-1 top-1/2 transform -translate-y-1/2 z-50 shadow-lg rounded-md md:hidden"
         onClick={() => setDrawerOpen(true)}
-      > 
+      >
         <Map className="h-10 w-10" />
       </Button>
 
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
-        <DrawerContent className="w-full max-w-md ml-auto h-full">
+        <DrawerContent className="w-full max-w-md ml-auto h-full md:hidden">
           {/* Your roadmap sidebar content here */}
           <div className="h-full flex flex-col">
             {/* Top part */}
@@ -754,7 +767,7 @@ export default function MentorPage() {
           </div>
         </DrawerContent>
       </Drawer>
-    
+
       {/* Roadmap sidebar - on the right with enhanced checklist */}
       <div className={`w-full md:w-96 border-l hidden md:block`}>
         <div className="h-full flex flex-col">
