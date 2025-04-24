@@ -3,31 +3,13 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
-import InterviewCard from './_components/InterviewCard';
-import { useAppSelector, useAppDispatch } from '@/redux/store';
-import { fetchUserInterviews } from '@/redux/slices/interviewSlice';
+import React from 'react';
+// import InterviewCard from './_components/InterviewCard';
+
 // import { fetchUserInterviews } from '@/redux/features/interviewSlice';
 
 const Interviewspage = () => {
-    const user = useAppSelector((state) => state.user.current);
-    const { interviews, loading, error } = useAppSelector((state) => state.interviews);
-    const dispatch = useAppDispatch();
-    console.log(interviews)
 
-    useEffect(() => {
-        if (user?.id) {
-            dispatch(fetchUserInterviews(user.id));
-        }
-    }, [user?.id, dispatch]);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="text-red-500">Error: {error}</div>;
-    }
 
     return (
         <>
@@ -56,7 +38,7 @@ const Interviewspage = () => {
                 <h2 className='text-2xl font-bold font-mono'>Your Interviews</h2>
 
                 <div className="flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch">
-                    {interviews?.length ? (
+                    {/* {interviews?.length ? (
                         interviews.map((interview:any) => (
                             <InterviewCard
                                 key={interview.id}
@@ -70,7 +52,7 @@ const Interviewspage = () => {
                         ))
                     ) : (
                         <p>You haven&apos;t taken any interviews yet</p>
-                    )}
+                    )} */}
                 </div>
             </section>
         </>

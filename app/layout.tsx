@@ -1,7 +1,6 @@
 'use client'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import FooterSection from "@/components/footer";
 import { HeroHeader } from "@/components/hero5-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import axios from "axios";
@@ -23,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { fetchUser } from "@/redux/slices/userSlice";
 import AuthLoader from "@/components/AuthLoader";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -31,24 +31,17 @@ export default function RootLayout({
 }>) {
 
   //get current user
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-
-  //     const token = localStorage.getItem('token');
-
-  //     if (!token) {
-  //       console.warn('No token found');
-  //       return;
-  //     }
-
-  //     try {
-  //       // const token = localStorage.getItem('token') // or wherever you store your token
-
-  //       const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/me', {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token') // or wherever you store your token
+        console.log('token',token);
+        
+        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
+          headers: {
+            Authorization: `Bearer 6|wpfktmdARlGdGdKVmtGKlZCmVxGPXPHQ5x847vJf52dc8eb1`,
+          },
+        })
 
   //       console.log('current user', response.data)
   //     } catch (error) {
@@ -77,7 +70,8 @@ export default function RootLayout({
             <AuthLoader />
             <HeroHeader />
             {children}
-            {/* <FooterSection /> */}
+            <Toaster/>
+          {/* <FooterSection /> */}
           </ReduxProvider>
         </ThemeProvider>
       </body>

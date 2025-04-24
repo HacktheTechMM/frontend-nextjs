@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { use } from 'react'; // Import the use hook
 
 import {
@@ -11,7 +11,6 @@ import {
   getInterviewById,
 } from "@/lib/actions/interview.action";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from '@/redux/store';
 
 interface FeedbackData {
   totalScore?: number;
@@ -26,8 +25,7 @@ const Feedback = ({ params }: { params: Promise<{ id: string }> }) => {
   // Unwrap the params promise
   const { id } = use(params);
   const router = useRouter();
-  const user = useAppSelector(state => state.user.current);
-  const [interview, setInterview] = useState<any>(null);
+  const [interview, setInterview] = useState(null);
   const [feedback, setFeedback] = useState<FeedbackData | null>(null);
   const [loading, setLoading] = useState(true);
 

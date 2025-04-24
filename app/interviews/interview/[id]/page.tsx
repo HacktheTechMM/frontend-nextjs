@@ -2,21 +2,19 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import DisplayTechIcons from "../../_components/DisplayTechIcons";
-import Agent from "../../_components/Agent";
-import { useAppSelector } from "@/redux/store";
+// import Agent from "../../_components/Agent";
 import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/interview.action";
 
 const InterviewDetails = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
-  const user = useAppSelector(state => state.user.current);
-  const [interview, setInterview] = useState<any>(null);
-  const [feedback, setFeedback] = useState<any>(null);
+  const [interview, setInterview] = useState(null);
+  const [feedback, setFeedback] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      
+
       try {
         // Fetch interview data
         const interviewData = await getInterviewById(id);
@@ -42,7 +40,7 @@ const InterviewDetails = () => {
     };
 
     fetchData();
-  }, [id, user?.id, router]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -68,14 +66,14 @@ const InterviewDetails = () => {
         </p>
       </div>
 
-      <Agent
+      {/* <Agent
         userName={user?.name!}
         userId={user?.id}
         interviewId={id}
         type="interview"
         questions={interview.questions}
         feedbackId={feedback?.id}
-      />
+      /> */}
     </>
   );
 };
