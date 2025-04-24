@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const res = await fetch('https://ai-backend-7-vpq9.onrender.com/steps/invoke', {
+    const res = await fetch('https://ai-backend-9.onrender.com/steps/invoke', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
