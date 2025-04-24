@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { useTheme } from "next-themes";
-// import { createFeedback } from "@/lib/actions/general.action";
+import { createFeedback } from "@/lib/actions/interview.action"; 
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -32,6 +32,12 @@ const Agent = ({
 }: AgentProps) => {
   
   const {theme} = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -93,20 +99,20 @@ const Agent = ({
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       console.log("handleGenerateFeedback");
 
-      // const { success, feedbackId: id } = await createFeedback({
-      //   interviewId: interviewId!,
-      //   userId: userId!,
-      //   transcript: messages,
-      //   feedbackId,
-      // });
-      // console.log(success)
+      const { success, feedbackId: id } = await createFeedback({
+        interviewId: interviewId!,
+        userId: userId!,
+        transcript: messages,
+        feedbackId,
+      });
+      console.log(success)
 
-      // if (success && id) {
-      //   router.push(`/interview/${interviewId}/feedback`);
-      // } else {
-      //   console.log("Error saving feedback");
-      //   router.push("/");
-      // }
+      if (success && id) {
+        router.push(`/interviews/interview/${interviewId}/feedback`);
+      } else {
+        console.log("Error saving feedback");
+        router.push("/");
+      }
     };
 
     if (callStatus === CallStatus.FINISHED) {
@@ -157,23 +163,29 @@ const Agent = ({
         <div className="border border-gray-200 p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[400px] max-md:hidden bg-white dark:bg-accent shadow-sm dark:shadow-none">
           <div className="flex flex-col gap-2 justify-center items-center p-7 rounded-2xl min-h-full">
             <div className="relative">
-              {theme === 'dark' ? <Image
-                src="/logo.svg"
-                alt="profile-image"
-                width={539}
-                height={539}
-                color=""
-                className="rounded-full object-cover size-[120px]"
-              /> : 
-              <Image
-                src="/logo-black.svg"
-                alt="profile-image"
-                width={539}
-                height={539}
-                color=""
-                className="rounded-full object-cover size-[120px]"
-              /> 
-            }
+              {mounted ? (
+                theme === 'dark' ? (
+                  <Image
+                    src="/logo.svg"
+                    alt="profile-image"
+                    width={539}
+                    height={539}
+                    className="rounded-full object-cover size-[120px]"
+                  />
+                ) : (
+                  <Image
+                    src="/logo-black.svg"
+                    alt="profile-image"
+                    width={539}
+                    height={539}
+                    className="rounded-full object-cover size-[120px]"
+                  />
+                )
+              ) : (
+                // Show a neutral placeholder during SSR
+                <div className="rounded-full object-cover size-[120px] bg-gray-200 dark:bg-gray-700" />
+              )}
+
               {isSpeaking && (
                 <span className="absolute top-0 left-0 inline-flex h-full w-full animate-ping rounded-full bg-primary-200 opacity-75" />
               )}

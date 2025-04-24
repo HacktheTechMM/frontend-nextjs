@@ -1,3 +1,4 @@
+"use client"
 import FAQsThree from "@/components/faqs-3";
 import Features from "@/components/features-1";
 import HeroSection from "@/components/hero-section";

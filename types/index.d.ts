@@ -75,7 +75,7 @@ interface InterviewFormProps {
   level: string;
   type: string;
   techstack: string[];
-  amount: number;
+  amount?: number;
 }
 
 interface TechIconProps {

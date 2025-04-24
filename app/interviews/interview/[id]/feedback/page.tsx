@@ -1,28 +1,70 @@
-
-
+"use client";
 import { format } from 'date-fns';
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { use } from 'react'; // Import the use hook
 
 import {
   getFeedbackByInterviewId,
   getInterviewById,
-} from "@/lib/actions/general.action";
+} from "@/lib/actions/interview.action";
 import { Button } from "@/components/ui/button";
 
-const Feedback = async ({ params }: RouteParams) => {
-  const { id } = await params;
-  // const user = await getCurrentUser();
-  const user = "1"
-  const interview = await getInterviewById(id);
-  if (!interview) redirect("/");
+interface FeedbackData {
+  totalScore?: number;
+  createdAt?: string;
+  finalAssessment?: string;
+  categoryScores?: Array<{ name: string; score: number; comment: string }>;
+  strengths?: string[];
+  areasForImprovement?: string[];
+}
 
-  const feedback = await getFeedbackByInterviewId({
-    interviewId: id,
-    userId: "1",
-  });
-  console.log("feedback", feedback);
+const Feedback = ({ params }: { params: Promise<{ id: string }> }) => {
+  // Unwrap the params promise
+  const { id } = use(params);
+  const router = useRouter();
+  const [interview, setInterview] = useState(null);
+  const [feedback, setFeedback] = useState<FeedbackData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const interviewData = await getInterviewById(id);
+        if (!interviewData) {
+          // router.push("/interviews");
+          return;
+        }
+        setInterview(interviewData);
+
+        if (user?.id) {
+          const feedbackData = await getFeedbackByInterviewId({
+            interviewId: id,
+            userId: user.id
+          });
+          setFeedback(feedbackData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id, user?.id, router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!interview) {
+    return (
+      <h1>we do not have feedback because we do not you interview data</h1>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-8 max-w-5xl mx-auto max-sm:px-4 text-lg leading-7">

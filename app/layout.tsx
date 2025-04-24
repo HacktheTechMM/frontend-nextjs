@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 
 
 import { useEffect } from "react";
+import { ReduxProvider } from "@/redux/provider";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchUser } from "@/redux/slices/userSlice";
+import AuthLoader from "@/components/AuthLoader";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
@@ -38,14 +43,17 @@ export default function RootLayout({
           },
         })
 
-        console.log('current user',response.data)
-      } catch (error) {
-        console.error('Error fetching user:', error)
-      }
-    }
+  //       console.log('current user', response.data)
+  //     } catch (error) {
+  //       console.error('Error fetching user:', error)
+  //     }
+  //   }
 
-    fetchUser()
-  }, [])
+  //   fetchUser()
+  // }, [])
+
+
+
 
   return (
     <html lang="en" suppressHydrationWarning className="dark">
@@ -56,12 +64,15 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          // disableTransitionOnChange
+        // disableTransitionOnChange
         >
-          <HeroHeader />
-          {children}
-          <Toaster/>
+          <ReduxProvider>
+            <AuthLoader />
+            <HeroHeader />
+            {children}
+            <Toaster/>
           {/* <FooterSection /> */}
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>

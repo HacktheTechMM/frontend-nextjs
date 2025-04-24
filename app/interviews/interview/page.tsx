@@ -1,21 +1,19 @@
+"use client"
 
-import Agent from "../_components/Agent";
+// import Agent from "../_components/Agent";
 
-const Page = async () => {
-  // const user = await getCurrentUser();
+const Page = () => {
 
   return (
     <>
-      <h3>Interview generation</h3>
+      <h3 className="text-2xl font-mona font-bold mt-12">Interview generation</h3>
 
-      <Agent
-        // userName={user?.name!}
-        // userId={user?.id}
-        // type="generate"
-        userName={"htoo"}
-        userId={"1"}
+      {/* <Agent
+        userName={user?.name!}
+        userId={user?.id}
         type="generate"
-      />
+       
+      /> */}
     </>
   );
 };

@@ -1,12 +1,16 @@
-import { Button } from '@/components/ui/button'
-import { dummyInterviews } from '@/constants'
-import { Inter } from 'next/font/google'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
-import InterviewCard from './_components/InterviewCard'
+"use client";
+
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+// import InterviewCard from './_components/InterviewCard';
+
+// import { fetchUserInterviews } from '@/redux/features/interviewSlice';
 
 const Interviewspage = () => {
+
+
     return (
         <>
             <section className="flex flex-row bg-gradient-to-b from-[#171532] to-[#08090D] rounded-3xl px-16 items-center justify-between max-sm:px-4">
@@ -30,13 +34,12 @@ const Interviewspage = () => {
                 />
             </section>
 
-
             <section className="flex flex-col gap-6 mt-8">
                 <h2 className='text-2xl font-bold font-mono'>Your Interviews</h2>
 
                 <div className="flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch">
-                    {/* {hasPastInterviews ? (
-                        userInterviews?.map((interview) => (
+                    {/* {interviews?.length ? (
+                        interviews.map((interview:any) => (
                             <InterviewCard
                                 key={interview.id}
                                 userId={user?.id}
@@ -50,23 +53,10 @@ const Interviewspage = () => {
                     ) : (
                         <p>You haven&apos;t taken any interviews yet</p>
                     )} */}
-                    {dummyInterviews.map((internive) => (
-                        <InterviewCard 
-                            key={internive.id}
-                            userId={internive.userId}
-                            interviewId={internive.id}
-                            role={internive.role}
-                            type={internive.type}
-                            techstack={internive.techstack}
-                            createdAt={internive.createdAt}
-                        />
-                    ))}
                 </div>
             </section>
-
-
         </>
-    )
-}
+    );
+};
 
-export default Interviewspage
+export default Interviewspage;

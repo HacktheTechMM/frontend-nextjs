@@ -1,4 +1,5 @@
-import { interviewCovers, mappings } from "@/constants";
+import { mappings } from "@/constants";
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -6,11 +7,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-
 const techIconBaseURL = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
 
 const normalizeTechName = (tech: string) => {
-  
+
   const key = tech.toLowerCase().replace(/\.js$/, "").replace(/\s+/g, "");
   // console.log(mappings[key as keyof typeof mappings])
   return mappings[key as keyof typeof mappings];
@@ -42,9 +42,31 @@ export const getTechLogos = async (techArray: string[]) => {
   );
 
   return results;
-};
+}; 
 
-export const getRandomInterviewCover = () => {
-  const randomIndex = Math.floor(Math.random() * interviewCovers.length);
-  return `/covers${interviewCovers[randomIndex]}`;
-};
+// export const getCurrentUser = async () => {
+//   try {
+//     if (typeof window === "undefined") {
+//       // Prevent running on the server
+//       return null;
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (!token) throw new Error("No token found");
+
+//     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     return response.data.user;
+//   } catch (error: any) {
+//     console.error("Error getting current user:", error.response?.data || error.message);
+//     return null;
+//   }
+
+// };
+
+

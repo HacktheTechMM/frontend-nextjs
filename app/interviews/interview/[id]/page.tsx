@@ -1,49 +1,66 @@
-import Image from "next/image";
-import { redirect } from "next/navigation";
-
-
-import { getRandomInterviewCover } from "@/lib/utils";
-
-import {
-  getFeedbackByInterviewId,
-  getInterviewById,
-} from "@/lib/actions/general.action";
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import DisplayTechIcons from "../../_components/DisplayTechIcons";
-import Agent from "../../_components/Agent";
+// import Agent from "../../_components/Agent";
+import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/interview.action";
 
-const InterviewDetails = async ({ params }: RouteParams) => {
-  const { id } = await params;
+const InterviewDetails = () => {
+  const router = useRouter();
+  const { id } = useParams() as { id: string };
+  const [interview, setInterview] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // const user = await getCurrentUser(); 
-  const [user] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
 
-  const interview = await getInterviewById(id);
-  if (!interview) redirect("/");
+      try {
+        // Fetch interview data
+        const interviewData = await getInterviewById(id);
+        if (!interviewData) {
+          // router.push("/interviews");
+          return;
+        }
+        setInterview(interviewData);
 
-  // const feedback = await getFeedbackByInterviewId({
-  //   interviewId: id,
-  //   userId: user?.id!,
-  // });
+        // Fetch feedback if user exists
+        if (user?.id) {
+          const feedbackData = await getFeedbackByInterviewId({
+            interviewId: id,
+            userId: user.id
+          });
+          setFeedback(feedbackData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!interview) {
+    return (
+      <h1>we do have interview</h1>
+    );
+  }
 
   return (
     <>
       <div className="flex flex-row gap-4 justify-between">
         <div className="flex flex-row gap-4 items-center max-sm:flex-col">
           <div className="flex flex-row gap-4 items-center">
-            <Image
-              src={getRandomInterviewCover()}
-              alt="cover-image"
-              width={40}
-              height={40}
-              className="rounded-full object-cover size-[40px]"
-            />
             <h3 className="capitalize">{interview.role} Interview</h3>
           </div>
-
           <DisplayTechIcons techStack={interview.techstack} />
         </div>
-
         <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit">
           {interview.type}
         </p>
@@ -57,15 +74,6 @@ const InterviewDetails = async ({ params }: RouteParams) => {
         questions={interview.questions}
         feedbackId={feedback?.id}
       /> */}
-
-      <Agent
-        userName={'htoo'}
-        userId={"1"}
-        interviewId={id}
-        type="interview"
-        questions={interview.questions}
-        feedbackId={"1"}
-      />
     </>
   );
 };
