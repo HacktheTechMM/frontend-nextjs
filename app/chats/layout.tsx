@@ -50,7 +50,6 @@ const items = [
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
-    const router = useRouter();
 
     return (
 
@@ -68,7 +67,6 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                         return (
                                 <Button
                                     key={item.title}
-                                    onClick={()=> router.push(item.url)}
                                     variant="ghost"
                                     size="sm"
                                     className={cn(
