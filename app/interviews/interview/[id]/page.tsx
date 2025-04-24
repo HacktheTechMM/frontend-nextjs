@@ -78,4 +78,4 @@ const InterviewDetails = () => {
   );
 };
 
-export default InterviewDetails;
+export default InterviewDetails;  
