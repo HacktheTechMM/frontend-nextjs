@@ -82,15 +82,15 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
 
         let mentorRequest = {
-            mentor_id: mentorId.current.value,
-            subject_id: selectSubject,
-            learner_id: user.id,
+            mentor_id: parseInt(mentorId.current.value),
+            subject_id: parseInt(selectSubject),
+            learner_id: parseInt(user.id),
             message: typeMessage,
             requested_time: selectDayTime.current.value
         }
-        
+
         console.log(mentorRequest);
-        
+
 
         try {
             let response = await  axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/mentor-request`,mentorRequest,{
@@ -100,14 +100,14 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
             });
 
             console.log(response.data);
-            
-            
+
+
         } catch (error) {
             console.log(error);
-            
+
         }
-        
-        
+
+
         // Here you would typically send this data to your backend
         setShowBookingForm(false)
         form.reset()
@@ -155,7 +155,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                         <div className="mt-6 p-4 border rounded-lg bg-muted/50">
                             <h3 className="text-lg font-medium mb-4">Book a Session</h3>
                                 <form onSubmit={onSubmit} className="space-y-4">
-                                 
+
 
                                     <div>
                                         <label htmlFor="Day">Day</label>
@@ -174,9 +174,9 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                                             ))}
                                         </select>
                                     </div>
-                                    
+
                                     <input type="text" hidden value={mentor.id} ref={mentorId} />
-                                            
+
                                     <div>
                                         <label htmlFor="message">Message</label>
                                         <textarea name="message" id="" onChange={(e)=>setTypeMessage(e.target.value)} className="w-full bg-gray-800 rounded p-2" placeholder="Enter your booking message" rows={4} >
@@ -184,7 +184,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                                         </textarea>
                                     </div>
 
-                             
+
                                     <div className="flex justify-end space-x-2">
                                         <Button type="button" variant="outline" onClick={() => setShowBookingForm(false)}>
                                             Cancel
@@ -192,7 +192,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                                         <Button type="submit">Book Session</Button>
                                     </div>
                                 </form>
-                         
+
                         </div>
                     )}
                 </CardContent>

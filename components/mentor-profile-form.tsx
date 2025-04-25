@@ -1,74 +1,130 @@
 "use client"
 
-import { useState } from "react"
-import { Calendar } from "@/components/ui/calendar"
+
+
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
+import axios from "axios"
+import { set } from "date-fns"
 
-export default function MentorProfileForm() {
-  const [date, setDate] = useState<Date>()
 
-  return (
-    <form className="space-y-8">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
-          <Textarea
-            id="bio"
-            placeholder="Tell us about yourself, your background, and your teaching philosophy"
-            className="min-h-[120px]"
-          />
-          <p className="text-sm text-muted-foreground">This will be displayed on your public profile.</p>
-        </div>
+export default function MentorProfileForm({ role }: { role?: string }) {
+    // Removed unused userRole state
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const [bio, setBio] = useState("")
+    const [experience, setExperience] = useState("")
+    const [availableTime, setAvailableTime] = useState("")
+    const [subjects, setSubjects] = useState([])
+    const [selectSubject,setSelectSubject] = useState([]);
 
-        <div className="space-y-2">
-          <Label htmlFor="experience">Experience</Label>
-          <Textarea
-            id="experience"
-            placeholder="Describe your teaching experience, qualifications, and areas of expertise"
-            className="min-h-[120px]"
-          />
-        </div>
 
-        <div className="space-y-2">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="start-time" className="text-sm">
-                Availability Time
-              </Label>
-              <Input id="start-time" type="time" className="mt-1" />
+
+
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            const subjects = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/subjects`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
+
+            setSubjects(subjects.data.data);
+        }
+
+        fetchSubjects()
+    }, [])
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const formData = {
+            mentor_profile: role === "mentor" ? {
+                bio, // Add mentor bio field here
+                experience,
+                availability: availableTime,
+                subjects: selectSubject,
+            } : undefined,
+
+            userId: user.id,
+            role,
+        }
+        // console.log(formData)
+
+
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
+
+
+
+        setBio("")
+        setExperience("")
+        setAvailableTime("")
+        // setSubjects([])
+
+        // console.log(response.data);
+
+    }
+
+    return (
+        <form className="space-y-8"
+            onSubmit={handleSubmit}>
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="bio">Bio</Label>
+                    <Textarea
+                        id="bio"
+                        placeholder="Tell us about yourself, your background, and your teaching philosophy"
+                        className="min-h-[120px]"
+                        onChange={(e) => setBio(e.target.value)}
+                    />
+                    <p className="text-sm text-muted-foreground">This will be displayed on your public profile.</p>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="experience">Experience</Label>
+                    <Textarea
+                        id="experience"
+                        placeholder="Describe your teaching experience, qualifications, and areas of expertise"
+                        className="min-h-[120px]"
+                        onChange={(e) => setExperience(e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <Label>Subjects</Label>
+                    <select
+                        name="subjects"
+                        id="subjects"
+                        multiple
+                        className="w-full mt-1"
+                        onChange={(e) => {
+                            const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+                            setSelectSubject(selectedOptions);
+                        }}
+                    >
+                        {subjects.map((subject: any) => (
+                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Available Time</Label>
+                    <Input id="start-time" type="text" className="mt-1"
+                        onChange={(e) => setAvailableTime(e.target.value)} />
+
+                </div>
             </div>
-          </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label>Available Date</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : "Select a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
 
-      <Button type="submit" className="w-full sm:w-auto">
-        Update Profile
-      </Button>
-    </form>
-  )
+            <Button type="submit" className="w-full sm:w-auto">
+                Update Profile
+            </Button>
+        </form>
+    )
 }

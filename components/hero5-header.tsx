@@ -19,16 +19,18 @@ const menuItems = [
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    const [token, setToken] = useState<string | null>(null);
+    // const [token, setToken] = useState<string | null>(null);
+    const token = localStorage.getItem("token");
+
     useEffect(() => {
         // Runs only on client
-        const savedToken = localStorage.getItem("token");
-        setToken(savedToken);
-    
+        // const savedToken = localStorage.getItem("token");
+        // setToken(savedToken);
+
         const handleScroll = () => {
           setIsScrolled(window.scrollY > 50);
         };
-    
+
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
       }, []);

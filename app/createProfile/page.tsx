@@ -1,5 +1,5 @@
 "use client"
-
+import React, { useState } from "react"
 import {
     Select,
     SelectContent,
@@ -9,8 +9,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import MentorProfileForm from "@/components/mentor-profile-form";
+import LearnerProfileForm from "@/components/learner-profile-form";
 
-export default function createProfile() {
+export default function CreateProfile() {
+
+    const [selectProfile, setSelectProfile] = useState("");
+
+    console.log(selectProfile);
+
+
     return (
         <div className="py-20 px-4">
 
@@ -20,23 +28,36 @@ export default function createProfile() {
             </div>
             <div className="border-b" />
 
-            <div className="max-w-3xl mx-auto py-4 bg-yellow">
-                <Select>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a fruit" />
+            <div className="max-w-3xl mx-auto py-4  text-center">
+                <Select onValueChange={setSelectProfile}>
+                    <SelectTrigger className="w-full" >
+                        <SelectValue placeholder="Select Profile" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                            <SelectLabel>Profile</SelectLabel>
+                            <SelectItem value="MENTOR">Mentor</SelectItem>
+                            <SelectItem value="LEARNER">Learner</SelectItem>
+
                         </SelectGroup>
                     </SelectContent>
                 </Select>
             </div>
+
+
+
+            {selectProfile === "mentor" && (
+                <div className="max-w-3xl mx-auto py-4">
+                    <MentorProfileForm role={selectProfile}/>
+                </div>
+            )}
+
+
+            {selectProfile === "learner" && (
+                <div className="max-w-3xl mx-auto py-4">
+                    <LearnerProfileForm role={selectProfile}/>
+                </div>
+            )}
         </div>
     )
 }

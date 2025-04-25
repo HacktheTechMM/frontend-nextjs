@@ -1,6 +1,7 @@
 "use client"
 
 import MentorProfile from '@/components/mentorProfile';
+import { useUser } from '@/context/UserContext';
 import axios from 'axios'
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
@@ -11,12 +12,16 @@ const page = () => {
 
   const [mentorProfiles, setMentorProfiles] = useState([]);
   const [loading, setLoading] = useState(true)
+  const user = useUser() || null;
 
   useEffect(() => {
     try {
       const handleMentor = async () => {
         let response = await axios.get("http://127.0.0.1:8000/api/v1/get-mentors");
         setMentorProfiles(response.data.data);
+
+        console.log(response.data.data);
+
 
       }
 
@@ -43,7 +48,7 @@ const page = () => {
 
   return (
     <div>
-     
+
       <div className='py-20 px-10'>
         <div className="text-center">
           <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
