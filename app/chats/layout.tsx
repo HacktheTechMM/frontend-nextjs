@@ -123,6 +123,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
             </div>
 
+
             <div className="flex-1 overflow-auto pb-16 md:pb-0">{children}</div>
 
             {/* Desktop Sidebar (shown on md screens and above) */}
@@ -193,6 +194,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
                             />
                         </SidebarFooter>
                     </Sidebar>
+
                 </div>
                 <div className="flex-1 overflow-auto">{children}</div>
             </SidebarProvider>
