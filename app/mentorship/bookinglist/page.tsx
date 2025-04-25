@@ -60,13 +60,7 @@ const mentorRequests = [
   },
 ]
 
-const formatRequestedTime = (timeObj: { [key: string]: string[] }) => {
-  if (!timeObj || Object.keys(timeObj).length === 0) return "N/A"
 
-  return Object.entries(timeObj)
-    .map(([day, times]) => times.map(time => `${day} ${time}`).join(", "))
-    .join(", ")
-}
 
 
 const getStatusColor = (status: string) => {
@@ -147,7 +141,7 @@ export default function TableDemo() {
             <TableCell className="font-medium">{mentor.mentor_name}</TableCell>
             <TableCell>{mentor.subject_name}</TableCell>
             <TableCell>{mentor.learner_name}</TableCell>
-            <TableCell>{formatRequestedTime(JSON.parse(mentor.requested_time))}</TableCell>
+            <TableCell>{mentor.requested_time}</TableCell>
             <TableCell className={`text-right`}>{mentor.status}</TableCell>
           </TableRow>
         ))}
