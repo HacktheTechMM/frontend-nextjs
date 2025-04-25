@@ -7,71 +7,18 @@ import Link from 'next/link';
 import InterviewCard from './_components/InterviewCard';
 import { useUser } from '@/context/UserContext';
 
+interface Interview {
+  interview_id: string;
+  user_id: string;
+  role: string;
+  type: string;
+  techstack: string[];
+  created_at: string;
+}
+
 const Interviewspage = () => {
-  const { user, loading } = useUser();
-  const [interviews, setInterviews] = useState<any[]>([]);
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  console.log(interviews)
-  useEffect(() => {
-    if (loading || !user?.id || fetching === false) return;
-  
-    const fetchUserInterviews = async () => {
-      setFetching(true);
-      setError(null);
-  
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("No authentication token found");
-  
-        const response = await fetch(`/api/interview/user/${user.id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-  
-        const data = await response.json();
-  
-        // Optional: sort by newest first
-        const sortedData = data.sort(
-          (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-  
-        setInterviews(sortedData);
-      } catch (err) {
-        console.error("Failed to fetch interviews:", err);
-        setError(err instanceof Error ? err.message : "Failed to load interviews");
-      } finally {
-        setFetching(false);
-      }
-    };
-  
-    fetchUserInterviews();
-  }, [user?.id, loading]);
-   // Trigger re-run if user or loading state changes
-
-  // If the user is loading, show a loading indicator
-  if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading user data...</div>;
-  }
-
-  // If there was an error in fetching interviews
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 gap-4">
-        <p className="text-red-500">{error}</p>
-        <Button onClick={() => window.location.reload()}>Retry</Button>
-      </div>
-    );
-  }
-
+    
   return (
     <>
       <section className="flex flex-row bg-gradient-to-b from-[#171532] to-[#08090D] rounded-3xl px-16 items-center justify-between max-sm:px-4">
@@ -98,32 +45,16 @@ const Interviewspage = () => {
       <section className="flex flex-col gap-6 mt-8">
         <h2 className='text-2xl font-bold font-mono'>Your Interviews</h2>
 
-        <div className="flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch">
-          {fetching ? (
-            <div className="flex justify-center w-full">
-              <p>Loading interviews...</p>
-            </div>
-          ) : interviews.length > 0 ? (
-            interviews.map((interview) => (
-              <InterviewCard
-                key={interview.interview_id}
-                userId={user?.id}
-                interviewId={interview.interview_id}
-                role={interview.role}
-                type={interview.type}
-                techstack={interview.techstack}
-                createdAt={interview.created_at}
-              />
 
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center gap-4 py-8">
-              <p>You haven't taken any interviews yet</p>
-              <Button asChild>
-                <Link href="interviews/interview">Start Your First Interview</Link>
-              </Button>
-            </div>
-          )}
+        <div className="flex flex-wrap gap-4 max-lg:flex-col w-full md:w-2/4 items-stretch">
+          <InterviewCard
+                userId={"1"}
+                interviewId={"1"}
+                role={"frontend"}
+                type={"mixed"}
+                techstack={["next.js"]}
+                createdAt={"2025-04-26T09:30:30.209Z"}
+              />
         </div>
       </section>
     </>

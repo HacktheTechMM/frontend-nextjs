@@ -7,11 +7,11 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import Link from 'next/link'
-import { redirect, useRouter } from 'next/navigation'
+import {  useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
-
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 const signUpSchema = z.object({
     name: z.string().min(1, "Username is required"),
@@ -23,18 +23,17 @@ const signUpSchema = z.object({
     path: ["password_confirmation"]
 });
 
-
 export default function RegisterPage() {
-
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
         resolver: zodResolver(signUpSchema),
         mode: 'onBlur'
     });
 
-
     const onSubmit = async (data: any) => {
+        setIsLoading(true);
         try {
             let response = await axios.post(`http://127.0.0.1:8000/api/v1/auth/register`, data, {
                 headers: {
@@ -42,33 +41,39 @@ export default function RegisterPage() {
                 },
             });
 
-
-
             let { token, user } = response.data.data;
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 
-            router.push("/")
+            toast.success('Account created successfully!');
+            router.push("/chats");
 
         } catch (error: any) {
-
             if (error.response?.data?.errors) {
                 Object.entries(error.response.data.errors).forEach(([key, message]) => {
-                    setError(key as "name" | "email" | "password" | "password_confirmation", { type: "server", message: message as string });
+                    setError(key as "name" | "email" | "password" | "password_confirmation", { 
+                        type: "server", 
+                        message: message as string 
+                    });
                 });
             } else {
-                setError("root.serverError", { type: "server", message: "An unexpected error occurred." });
+                setError("root.serverError", { 
+                    type: "server", 
+                    message: "An unexpected error occurred." 
+                });
             }
+            toast.error('Failed to create account. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     }
 
     const handleSocialAuth = (provider: string) => {
         try {
-            // TODO:: to add href link to redirect callback
             window.location.href = `http://127.0.0.1:8000/auth/${provider}/redirect`;
-
         } catch (error) {
             console.log(error);
+            toast.error(`Failed to connect with ${provider}`);
         }
     }
 
@@ -91,7 +96,6 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="mt-6 space-y-6">
-
                         <div className="space-y-2">
                             <Label
                                 htmlFor="name"
@@ -109,7 +113,6 @@ export default function RegisterPage() {
                             )}
                         </div>
 
-
                         <div className="space-y-2">
                             <Label
                                 htmlFor="email"
@@ -122,7 +125,6 @@ export default function RegisterPage() {
                                 id="email"
                                 {...register("email")}
                             />
-
                             {errors.email && (
                                 <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
                             )}
@@ -153,12 +155,10 @@ export default function RegisterPage() {
                                 className="input sz-md variant-mixed"
                                 {...register("password")}
                             />
-
                             {errors.password && (
                                 <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
                             )}
                         </div>
-
 
                         <div className="space-y-0.5">
                             <div className="flex items-center justify-between">
@@ -167,12 +167,6 @@ export default function RegisterPage() {
                                     className="text-title text-sm">
                                     Password Confirmation
                                 </Label>
-                                <Button
-                                    asChild
-                                    variant="link"
-                                    size="sm">
-
-                                </Button>
                             </div>
                             <Input
                                 type="password"
@@ -181,13 +175,28 @@ export default function RegisterPage() {
                                 className="input sz-md variant-mixed"
                                 {...register("password_confirmation")}
                             />
-
                             {errors.password_confirmation && (
                                 <p className="mt-1 text-sm text-red-500">{errors.password_confirmation.message}</p>
                             )}
                         </div>
 
-                        <Button type="submit" className="w-full" >Sign In</Button>
+                        <Button 
+                            type="submit" 
+                            className="w-full"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Creating Account...
+                                </>
+                            ) : (
+                                'Create An Account'
+                            )}
+                        </Button>
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
