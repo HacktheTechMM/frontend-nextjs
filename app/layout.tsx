@@ -31,11 +31,10 @@ export default function RootLayout({
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem('token') // or wherever you store your token
-        console.log('token',token);
 
-        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/me', {
+        const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/me', {
           headers: {
-            Authorization: `Bearer 6|wpfktmdARlGdGdKVmtGKlZCmVxGPXPHQ5x847vJf52dc8eb1`,
+            Authorization: `Bearer ${token ?? null}`,
           },
         })
 
