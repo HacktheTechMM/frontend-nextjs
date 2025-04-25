@@ -1,12 +1,10 @@
 "use client"
 
 import dynamic from 'next/dynamic'; 
-import MentorProfile from '@/components/mentorProfile';
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
-import AuthenticatedLayout from '../AuthenticatedLayout';
 
 // Wrap the `MentorProfile` component with dynamic import to disable SSR for this part
 const DynamicMentorProfile = dynamic(() => import('@/components/mentorProfile'), { ssr: false });
