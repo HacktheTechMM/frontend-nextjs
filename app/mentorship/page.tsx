@@ -45,12 +45,13 @@ const page = () => {
     <div>
      
       <div className='py-20 px-10'>
-        <div>
+        <div className="text-center">
           <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
           <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
+          <Link href="/mentorship/bookinglist" className="underline">your bookinglist</Link>
         </div>
 
-        <div className='grid grid-cols-3 gap-4 '>
+        <div className='grid grid-cols-1 gap-4 mx-auto md:grid-cols-3'>
 
           {mentorProfiles.length > 0 && (
             mentorProfiles.map((mentor) => {
