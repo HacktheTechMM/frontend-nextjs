@@ -21,9 +21,7 @@ interface Subject {
     name: string
 }
 
-interface Availability {
-    [key: string]: string[]
-}
+
 
 interface Mentor {
     id: number
@@ -37,7 +35,7 @@ interface Mentor {
 
 // Form schema for booking validation
 const bookingFormSchema = z.object({
-    day: z.string({
+    availability: z.string({
         required_error: "Please select a day.",
     }),
     time: z.string({
@@ -54,12 +52,14 @@ const bookingFormSchema = z.object({
 export default function MentorProfile({ mentor }: { mentor: Mentor }) {
     const [showBookingForm, setShowBookingForm] = useState(false)
     const mentorId = useRef(null);
+    const selectDayTime = useRef("");
+    const [selectSubject,setSelectSubject] = useState("");
+    const [typeMessage,setTypeMessage] = useState("");
     // Sample mentor data (in a real app, this would come from props or API)
 
 
     // Parse availability JSON string to object
-    const availabilityObj: Availability = JSON.parse(mentor.availability)
-    const availableDays = Object.keys(availabilityObj)
+    const availabilityObj: any = mentor.availability
 
     // Form setup
     const form = useForm<z.infer<typeof bookingFormSchema>>({
@@ -68,13 +68,13 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
     // Get selected day's available times
     const selectedDay = form.watch("day")
-    const availableTimes = selectedDay ? availabilityObj[selectedDay] : []
 
     // Handle form submission
-    async function onSubmit(data: z.infer<typeof bookingFormSchema>) {
+    async function onSubmit(e) {
+        e.preventDefault();
         toast({
             title: "Booking requested",
-            description: `You've requested session on ${data.day} at ${data.time}`,
+            description: `You've requested session on ${selectDayTime.current.value}`,
         })
 
         let user = JSON.parse(localStorage.getItem("user"));
@@ -83,12 +83,10 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
         let mentorRequest = {
             mentor_id: mentorId.current.value,
-            subject_id: data.subject,
+            subject_id: selectSubject,
             learner_id: user.id,
-            message: data.message,
-            requested_time: {
-            [data.day]: [data.time]
-            }
+            message: typeMessage,
+            requested_time: selectDayTime.current.value
         }
         
         console.log(mentorRequest);
@@ -142,134 +140,51 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
                     <div>
                         <h3 className="text-lg font-medium mb-2">Availability</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {availableDays.map((day) => (
-                                <div key={day} className="flex items-center p-3 border rounded-md">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div  className="flex items-center p-3 border rounded-md">
                                     <CalendarDays className="h-4 w-4 mr-2" />
                                     <div>
-                                        <div className="font-medium">{day}</div>
-                                        <div className="text-sm text-muted-foreground">{availabilityObj[day].join(", ")}</div>
+                                        <div className="font-medium">{mentor.availability.split(" ")[0]}</div>
+                                        <div className="text-sm text-muted-foreground">{mentor.availability.split(" ")[1]}</div>
                                     </div>
                                 </div>
-                            ))}
                         </div>
                     </div>
 
                     {showBookingForm && (
                         <div className="mt-6 p-4 border rounded-lg bg-muted/50">
                             <h3 className="text-lg font-medium mb-4">Book a Session</h3>
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="day"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Day</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl className="w-full">
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select a day" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {availableDays.map((day) => (
-                                                            <SelectItem key={day} value={day}>
-                                                                {day}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                <form onSubmit={onSubmit} className="space-y-4">
+                                 
 
-                                    <FormField
-                                        control={form.control}
-                                        name="time"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Time</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!selectedDay}>
-                                                    <FormControl className="w-full">
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder={selectedDay ? "Select a time" : "Select a day first"} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {availableTimes.map((time) => (
-                                                            <SelectItem key={time} value={time}>
-                                                                {time}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                    <div>
+                                        <label htmlFor="Day">Day</label>
+                                        <input type="text" value={mentor.availability} ref={selectDayTime} disabled className="w-full bg-gray-800 rounded p-2" />
+                                    </div>
 
 
-                                    <FormField
-                                        control={form.control}
-                                        name="subject"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Subject</FormLabel>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    value={field.value} // should be subject.id
-                                                >
-                                                    <FormControl className="w-full">
-                                                        <SelectTrigger>
-                                                            <SelectValue
-                                                                placeholder="Select a subject"
-                                                                // Convert subject ID back to subject name for display
-                                                                defaultValue={field.value}
-                                                            >
-                                                                {
-                                                                    mentor.subjects.find((s) => s.id === Number(field.value))?.name ??
-                                                                    "Select a subject"
-                                                                }
-                                                            </SelectValue>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {mentor.subjects.map((subject) => (
-                                                            <SelectItem key={subject.id} value={subject.id}>
-                                                                {subject.name}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
+                                    <div>
+                                        <label htmlFor="subject">Subject</label>
+                                        <select name="subject" id="subject" onChange={(e)=>setSelectSubject(e.target.value)} className="w-full bg-gray-800 p-2 rounded">
+                                            <option defaultValue="" disabled selected>Select a subject</option>
+                                            {mentor.subjects.map((subject) => (
+                                                <option key={subject.id} value={subject.id}>
+                                                    {subject.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                     
                                     <input type="text" hidden value={mentor.id} ref={mentorId} />
+                                            
+                                    <div>
+                                        <label htmlFor="message">Message</label>
+                                        <textarea name="message" id="" onChange={(e)=>setTypeMessage(e.target.value)} className="w-full bg-gray-800 rounded p-2" placeholder="Enter your booking message" rows={4} >
 
+                                        </textarea>
+                                    </div>
 
-                                    <FormField
-                                        control={form.control}
-                                        name="message"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Additional Notes</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        placeholder="Please share any specific topics or questions you'd like to discuss during the session..."
-                                                        className="resize-none min-h-[100px]"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
+                             
                                     <div className="flex justify-end space-x-2">
                                         <Button type="button" variant="outline" onClick={() => setShowBookingForm(false)}>
                                             Cancel
@@ -277,7 +192,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                                         <Button type="submit">Book Session</Button>
                                     </div>
                                 </form>
-                            </Form>
+                         
                         </div>
                     )}
                 </CardContent>
