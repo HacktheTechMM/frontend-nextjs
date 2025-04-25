@@ -12,11 +12,15 @@ type User = {
 type UserContextType = {
     user: User | null;
     loading: boolean;
+    token: string | null;
+    setToken: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const UserContext = createContext<UserContextType>({
     user: null,
     loading: true,
+    token: null,
+    setToken: () => { },
 });
 
 export const useUser = () => useContext(UserContext);
@@ -26,14 +30,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState<string | null>(null);
 
+    useEffect(() => {
+        // This code runs only on the client-side
+        const storedUser = localStorage.getItem("USER");
+        const storedToken = localStorage.getItem("token");
 
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+
+        if (storedToken) {
+            setToken(storedToken);
+        }
+
+        setLoading(false);
+    }, []);
 
     useEffect(() => {
+        if (!token) return;
+
         const fetchUser = async () => {
             try {
-                const token = localStorage.getItem("token");
-                if (!token) return setLoading(false);
-
                 const res = await fetch("/api/user", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -44,16 +61,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                 setUser(data);
             } catch (error) {
                 console.error("Error fetching user:", error);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchUser();
-    }, []);
+    }, [token]);
 
     return (
-        <UserContext.Provider value={{ user, loading ,token,setToken}}>
+        <UserContext.Provider value={{ user, loading, token, setToken }}>
             {children}
         </UserContext.Provider>
     );

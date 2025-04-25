@@ -40,7 +40,7 @@ export default function TableDemo() {
 
     const [requestList, setRequestList] = useState<any>([])
     const [loading, setLoading] = useState(true)
-    const user = JSON.parse(localStorage.getItem("USER")) || null;
+    const [user, setUser] = useState<any>(null)
 
 
 
@@ -70,42 +70,49 @@ export default function TableDemo() {
         }
     }
 
-
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("USER") || "null")
+        setUser(storedUser)
+    }, [])
 
     useEffect(() => {
+        if (!user) return
+
         const handleMentor = async () => {
             try {
-                let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${user.role == "LEARNER" ? 'my-mentor-requests' : 'mentor/learner-requests'}`, {
+                const token = localStorage.getItem("token")
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${user.role === "LEARNER" ? 'my-mentor-requests' : 'mentor/learner-requests'}`, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${token}`
                     }
-                });
-                console.log(response.data.data);
-
-                setRequestList(response.data.data);
-                setLoading(false)
+                })
+                setRequestList(response.data.data)
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching mentor requests:", error)
                 setRequestList([])
+            } finally {
                 setLoading(false)
-                console.log("Error fetching mentor requests:", error);
-
             }
         }
 
-        handleMentor();
-    }, [])
+        handleMentor()
+    }, [user])
 
 
-
-
-    if (requestList.length == 0) {
+    if (loading) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
-                <div className="flex flex-col items-center justify-center h-screen">
-                    <h1 className='text-2xl font-bold text-center'>Loading Mentor Request List</h1>
-                    <p className='text-center'>Please wait.</p>
-                </div>
+                <h1 className='text-2xl font-bold text-center'>Loading Mentor Request List</h1>
+                <p className='text-center'>Please wait.</p>
+            </div>
+        )
+    }
+
+    if (requestList.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen">
+                <h1 className="text-2xl font-bold text-center">No Requests Found</h1>
+                <p className="text-center">You have no mentor requests at the moment.</p>
             </div>
         )
     }

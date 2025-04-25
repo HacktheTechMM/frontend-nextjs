@@ -1,30 +1,34 @@
-"use client"
+"use client";
 
-import { redirect, useParams, useSearchParams } from 'next/navigation';
-import React, { useEffect } from 'react'
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-const page = () => {
-
+const Page = () => {
     const params = useParams();
     const searchParams = useSearchParams();
+    const router = useRouter();
+
     const token = searchParams.get('token');
     const message = searchParams.get('message');
-    
+
     useEffect(() => {
         const userId = params.userId as string;
+
         if (userId && token) {
             localStorage.setItem('userId', userId);
             localStorage.setItem("token", token);
-            redirect('/');
-        }else{
-            redirect('/login');
-            localStorage.setItem("socialAuthMessage",message as string);
+            router.push('/');
+        } else {
+            if (message) {
+                localStorage.setItem("socialAuthMessage", message);
+            }
+            router.push('/login');
         }
     }, []);
 
     return (
-        <div>page</div>
-    )
-}
+        <div>Redirecting...</div>
+    );
+};
 
-export default page
+export default Page;
