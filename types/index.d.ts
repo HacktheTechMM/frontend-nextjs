@@ -32,7 +32,17 @@ interface CreateFeedbackParams {
   feedbackId?: string;
 }
 
+interface SignInParams {
+  email: string;
+  idToken: string;
+}
 
+interface SignUpParams {
+  uid: string;
+  name: string;
+  email: string;
+  password: string;
+}
 
 interface InterviewCardProps {
   interviewId?: string;

@@ -3,9 +3,8 @@
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 
-// import { db } from "@/firebase/admin";
+
 import { feedbackSchema } from "@/constants";
-import axios from "axios";
 
 export async function createFeedback(params: CreateFeedbackParams) {
   const { interviewId, userId, transcript, feedbackId } = params;
@@ -51,19 +50,8 @@ export async function createFeedback(params: CreateFeedbackParams) {
     };
     console.log("feedback", feedback);
 
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/interviews/feedbacks`, feedback,{
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return { success: true, feedbackId: response.data.id };
-    } catch (error: any) {
-      console.error("Error storing feedback:", error.response?.data || error.message);
-      throw error;
-    }
+    let feedbackRef;
 
-  
 
   } catch (error) {
     console.error("Error saving feedback:", error);
@@ -72,54 +60,23 @@ export async function createFeedback(params: CreateFeedbackParams) {
 }
 
 export async function getInterviewById(id: string): Promise<Interview | null> {
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/interviews/${id}`);
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching interviews:", error.response?.data || error.message);
-    return null;
-  }
+  return null;
 }
 
 export async function getFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
-
-  const { interviewId, userId } = params;
-
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/feedbacks/interviews/${interviewId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching feedback:", error.response?.data || error.message);
     return null;
-  }
 }
 
 export async function getLatestInterviews(
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
-  return null;
-
+  return null
 }
 
 export async function getInterviewsByUserId(
   userId: string
 ): Promise<Interview[] | null> {
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${userId}/interviews`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log("get user inteview",response)
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching interviews:", error.response?.data || error.message);
-    return null;
-  }
+  return null
 }

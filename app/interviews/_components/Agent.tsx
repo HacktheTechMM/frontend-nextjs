@@ -111,13 +111,13 @@ const Agent = ({
         router.push(`/interviews/interview/${interviewId}/feedback`);
       } else {
         console.log("Error saving feedback");
-        router.push("/");
+        router.push("/interviews");
       }
     };
 
     if (callStatus === CallStatus.FINISHED) {
       if (type === "generate") {
-        router.push("/");
+        router.push("/interviews");
       } else {
         handleGenerateFeedback(messages);
       }
@@ -198,7 +198,7 @@ const Agent = ({
         <div className="border border-gray-200 dark:border-gray-700 p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[400px] max-md:hidden bg-white dark:bg-gray-900 shadow-sm dark:shadow-none">
           <div className="flex flex-col gap-2 justify-center items-center p-7 rounded-2xl min-h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
             <Image
-              src="/avatar.png"
+              src="/defaultP.png"
               alt="profile-image"
               width={539}
               height={539}
