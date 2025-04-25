@@ -13,8 +13,6 @@ import {
   Send,
   Sparkles,
   User,
-  Moon,
-  Sun,
   Clock,
   CheckCircle,
   Circle,
@@ -24,7 +22,6 @@ import {
   Layers,
   Code,
   Loader2,
-  PanelRightOpen,
   Map,
   SquareMinus,
 } from "lucide-react"

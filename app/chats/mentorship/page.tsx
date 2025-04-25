@@ -6,6 +6,7 @@ import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
+import AuthenticatedLayout from '../AuthenticatedLayout';
 
 // Wrap the `MentorProfile` component with dynamic import to disable SSR for this part
 const DynamicMentorProfile = dynamic(() => import('@/components/mentorProfile'), { ssr: false });
@@ -42,23 +43,25 @@ const Page = () => {
   }
 
   return (
-    <div className='py-20 px-10'>
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
-        <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
-        <Link href="/mentorship/bookinglist" className="underline">your bookinglist</Link>
-      </div>
+    <AuthenticatedLayout>
+      <div className='py-20 px-10'>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
+          <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
+          <Link href="/mentorship/bookinglist" className="underline">your bookinglist</Link>
+        </div>
 
-      <div className='grid grid-cols-1 gap-4 mx-auto md:grid-cols-3'>
-        {mentorProfiles.length > 0 ? (
-          mentorProfiles.map((mentor) => (
-            <DynamicMentorProfile key={mentor.id} mentor={mentor} />
-          ))
-        ) : (
-          <p>No mentors available at the moment.</p>
-        )}
+        <div className='grid grid-cols-1 gap-4 mx-auto md:grid-cols-3'>
+          {mentorProfiles.length > 0 ? (
+            mentorProfiles.map((mentor) => (
+              <DynamicMentorProfile key={mentor.id} mentor={mentor} />
+            ))
+          ) : (
+            <p>No mentors available at the moment.</p>
+          )}
+        </div>
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 

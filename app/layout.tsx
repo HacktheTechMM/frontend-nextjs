@@ -33,18 +33,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>
+        {/* <UserProvider> */}
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
           // disableTransitionOnChange
           >
-              <HeroHeader />
+              {/* <HeroHeader /> */}
               {children}
               <Toaster/>
           </ThemeProvider>
-        </UserProvider>
+        {/* </UserProvider> */}
       </body>
     </html>
   );
