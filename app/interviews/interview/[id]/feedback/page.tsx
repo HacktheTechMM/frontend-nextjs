@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { use } from 'react'; // Import the use hook
 
-import {
-  getFeedbackByInterviewId,
-  getInterviewById,
-} from "@/lib/actions/interview.action";
+// import {
+//   getFeedbackByInterviewId,
+//   getInterviewById,
+// } from "@/lib/actions/interview.action";
 import { Button } from "@/components/ui/button";
 
 interface FeedbackData {
@@ -19,46 +19,106 @@ interface FeedbackData {
   categoryScores?: Array<{ name: string; score: number; comment: string }>;
   strengths?: string[];
   areasForImprovement?: string[];
+  userId:string
 }
 
 const Feedback = ({ params }: { params: Promise<{ id: string }> }) => {
   // Unwrap the params promise
   const { id } = use(params);
   const router = useRouter();
-  const [interview, setInterview] = useState(null);
-  const [feedback, setFeedback] = useState<FeedbackData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const interviewData = await getInterviewById(id);
-        if (!interviewData) {
-          // router.push("/interviews");
-          return;
-        }
-        setInterview(interviewData);
-
-        if (user?.id) {
-          const feedbackData = await getFeedbackByInterviewId({
-            interviewId: id,
-            userId: user.id
-          });
-          setFeedback(feedbackData);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+  const [interview, setInterview] = useState({
+    "createdAt": "2025-04-26T09:30:30.209Z",
+    "finalized": true,
+    "level": "senior",
+    "questions": [
+      "Describe a complex frontend challenge you faced while using Next.js and how you overcame it.",
+      "Explain your approach to optimizing Next.js application performance, including specific techniques you've used.",
+      "How do you stay up to date with the latest advancements in Next.js and the broader frontend ecosystem?",
+      "Walk me through your experience with server side rendering, static site generation, and client side rendering in Next.js. What are the trade offs?",
+      "Describe a time you had to make a significant architectural decision on a frontend project. What factors did you consider, and what was the outcome?",
+      "How do you approach testing in a Next.js environment, and what types of tests do you prioritize?",
+      "Tell me about a project where you had to collaborate closely with backend engineers. How did you ensure a smooth integration between the frontend and backend?"
+    ],
+    "role": "frontend",
+    "techstack": ["next.js"],
+    "type": "mixed",
+    "userId": "1"
+  });
+  const [feedback, setFeedback] = useState<FeedbackData | null>({
+    "areasForImprovement": [
+      "Improve clarity and structure of responses.",
+      "Provide specific examples and details when answering questions.",
+      "Enhance technical knowledge and demonstrate a deeper understanding of concepts.",
+      "Practice articulating problem-solving approaches more effectively.",
+      "Increase confidence and engagement during interviews."
+    ],
+    "categoryScores": [
+      {
+        "comment": "The candidate's communication was unclear and unstructured. Responses were often vague and lacked specific details. There were grammatical errors and a lack of clarity in expressing thoughts.",
+        "name": "Communication Skills",
+        "score": 50
+      },
+      {
+        "comment": "The candidate mentioned 'RIAGS' but didn't elaborate on what it is or demonstrate a deep understanding. The response lacked technical depth and specific examples.",
+        "name": "Technical Knowledge",
+        "score": 50
+      },
+      {
+        "comment": "The candidate described learning RIAGS but didn't clearly articulate the specific challenges faced or the problem-solving steps taken. The response was more of a general statement than a detailed problem-solving scenario.",
+        "name": "Problem Solving",
+        "score": 40
+      },
+      {
+        "comment": "Based on the limited interaction, it's difficult to assess cultural fit comprehensively. However, the candidate's lack of engagement and somewhat unclear responses suggest a potential mismatch with a collaborative and communicative work environment.",
+        "name": "Cultural Fit",
+        "score": 45
+      },
+      {
+        "comment": "The candidate lacked confidence and clarity in their responses. There were hesitations and a lack of directness in answering the questions. The responses were not well-articulated, impacting the overall impression.",
+        "name": "Confidence and Clarity",
+        "score": 40
       }
-    };
-
-    fetchData();
-  }, [id, user?.id, router]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+    ],
+    "createdAt": "2025-04-13T07:15:31.416Z",
+    "finalAssessment": "The candidate's performance was below average. There are significant areas for improvement in communication skills, technical knowledge, problem-solving, and confidence. The candidate needs to work on providing clear, structured, and detailed responses to interview questions.",
+    // "interviewId": "ZSYYMt87QAQ4TrCfm9la",
+    "strengths": [
+      "Acknowledged the importance of practicing code.",
+      "Recognized errors as part of the learning process."
+    ],
+    "totalScore": 45,
+    "userId": "1"
   }
+  );
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const interviewData = await getInterviewById(id);
+  //       if (!interviewData) {
+  //         // router.push("/interviews");
+  //         return;
+  //       }
+  //       setInterview(interviewData);
+
+  //       if (user?.id) {
+  //         const feedbackData = await getFeedbackByInterviewId({
+  //           interviewId: id,
+  //           userId: user.id
+  //         });
+  //         setFeedback(feedbackData);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [id, user?.id, router]);
+
+
 
   if (!interview) {
     return (
@@ -136,25 +196,15 @@ const Feedback = ({ params }: { params: Promise<{ id: string }> }) => {
         </ul>
       </div>
 
-      <div className="flex w-full justify-evenly gap-4 max-sm:flex-col max-sm:items-center">
+      <div className="flex w-full justify-evenly gap-4 max-sm:flex-col max-sm:items-center mb-10">
         <Button className="btn-secondary flex-1">
-          <Link href="/" className="flex w-full justify-center">
-            <p className="text-sm font-semibold text-primary-200 text-center">
+          <Link href="/interviews" className="flex w-full justify-center">
+            <p className="text-sm font-semibold text-accent text-center">
               Back to dashboard
             </p>
           </Link>
         </Button>
 
-        <Button className="btn-primary flex-1">
-          <Link
-            href={`/interview/${id}`}
-            className="flex w-full justify-center"
-          >
-            <p className="text-sm font-semibold text-black text-center">
-              Retake Interview
-            </p>
-          </Link>
-        </Button>
       </div>
     </section>
   );

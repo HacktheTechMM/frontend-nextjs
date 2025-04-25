@@ -6,7 +6,11 @@ export async function POST(request: Request) {
     console.log("reponse",JSON.stringify(body))
 
     // Call the external API with the exact same body structure
-    const response = await fetch("https://ai-backend-10.onrender.com/quiz/invoke", {
+<<<<<<< HEAD
+    const response = await fetch("https://ai-backend-13.onrender.com/quiz/invoke", {
+=======
+    const response = await fetch("https://ai-backend-8.onrender.com/quiz/invoke", {
+>>>>>>> 7e4872e (quizz done)
       method: "POST",
       headers: {
         "Content-Type": "application/json",

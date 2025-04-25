@@ -1,12 +1,13 @@
+'use client'
 import { format } from 'date-fns';
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { getFeedbackByInterviewId } from "@/lib/actions/interview.action";
+// import { getFeedbackByInterviewId } from "@/lib/actions/interview.action";
 import DisplayTechIcons from "./DisplayTechIcons";
 import { Button } from '@/components/ui/button';
 
-const InterviewCard = async ({
+const InterviewCard = ({
   interviewId,
   userId,
   role,
@@ -14,13 +15,53 @@ const InterviewCard = async ({
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback =
-    userId && interviewId
-      ? await getFeedbackByInterviewId({
-          interviewId,
-          userId,
-        })
-      : null;
+  console.log(techstack)
+  const feedback = {
+    "areasForImprovement": [
+      "Improve clarity and structure of responses.",
+      "Provide specific examples and details when answering questions.",
+      "Enhance technical knowledge and demonstrate a deeper understanding of concepts.",
+      "Practice articulating problem-solving approaches more effectively.",
+      "Increase confidence and engagement during interviews."
+    ],
+    "categoryScores": [
+      {
+        "comment": "The candidate's communication was unclear and unstructured. Responses were often vague and lacked specific details. There were grammatical errors and a lack of clarity in expressing thoughts.",
+        "name": "Communication Skills",
+        "score": 50
+      },
+      {
+        "comment": "The candidate mentioned 'RIAGS' but didn't elaborate on what it is or demonstrate a deep understanding. The response lacked technical depth and specific examples.",
+        "name": "Technical Knowledge",
+        "score": 50
+      },
+      {
+        "comment": "The candidate described learning RIAGS but didn't clearly articulate the specific challenges faced or the problem-solving steps taken. The response was more of a general statement than a detailed problem-solving scenario.",
+        "name": "Problem Solving",
+        "score": 40
+      },
+      {
+        "comment": "Based on the limited interaction, it's difficult to assess cultural fit comprehensively. However, the candidate's lack of engagement and somewhat unclear responses suggest a potential mismatch with a collaborative and communicative work environment.",
+        "name": "Cultural Fit",
+        "score": 45
+      },
+      {
+        "comment": "The candidate lacked confidence and clarity in their responses. There were hesitations and a lack of directness in answering the questions. The responses were not well-articulated, impacting the overall impression.",
+        "name": "Confidence and Clarity",
+        "score": 40
+      }
+    ],
+    "createdAt": "2025-04-13T07:15:31.416Z",
+    "finalAssessment": "The candidate's performance was below average. There are significant areas for improvement in communication skills, technical knowledge, problem-solving, and confidence. The candidate needs to work on providing clear, structured, and detailed responses to interview questions.",
+    "interviewId": "ZSYYMt87QAQ4TrCfm9la",
+    "strengths": [
+      "Acknowledged the importance of practicing code.",
+      "Recognized errors as part of the learning process."
+    ],
+    "totalScore": 45,
+    "userId": "Gm2623IML4cTlfNIXHnisKiiPQA2"
+  }
+
 
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
@@ -31,10 +72,10 @@ const InterviewCard = async ({
       Technical: "bg-light-800",
     }[normalizedType] || "bg-light-600";
 
-    const formattedDate = format(
-        new Date(feedback?.createdAt || createdAt || Date.now()),
-        'MMM d, yyyy'
-      );
+  const formattedDate = format(
+    new Date(feedback?.createdAt || createdAt || Date.now()),
+    'MMM d, yyyy'
+  );
 
   return (
     <div className="border-gradient p-0.5 rounded-2xl w-fit max-sm:w-full min-h-auto text-white">
