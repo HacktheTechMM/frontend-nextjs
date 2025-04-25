@@ -1,39 +1,40 @@
-'use client'
-import Link from 'next/link'
-import { Logo } from './logo'
-import { Menu, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import React, { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { ThemeToggle } from './theme-toggle'
-import { UserDropdown } from './user-dropdown'
+'use client';
+import Link from 'next/link';
+import { Logo } from './logo';
+import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React, { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { ThemeToggle } from './theme-toggle';
+import { UserDropdown } from './user-dropdown';
 
 const menuItems = [
     { name: 'Features', href: '#link' },
     { name: 'Solution', href: '#link' },
     { name: 'Pricing', href: '#link' },
     { name: 'About', href: '#link' },
-]
-
+];
 
 export const HeroHeader = () => {
-    const [menuState, setMenuState] = React.useState(false)
-    const [isScrolled, setIsScrolled] = React.useState(false)
-    // const [token, setToken] = useState<string | null>(null);
-    const token = localStorage.getItem("token");
+    const [menuState, setMenuState] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // Runs only on client
-        // const savedToken = localStorage.getItem("token");
-        // setToken(savedToken);
+        // Check if we are on the client-side before accessing localStorage
+        if (typeof window !== 'undefined') {
+            const savedToken = localStorage.getItem("token");
+            setToken(savedToken);
+        }
 
         const handleScroll = () => {
-          setIsScrolled(window.scrollY > 50);
+            setIsScrolled(window.scrollY > 50);
         };
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-      }, []);
+    }, []);
+
     return (
         <header>
             <nav
@@ -51,7 +52,7 @@ export const HeroHeader = () => {
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
-                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
+                                aria-label={menuState === true ? 'Close Menu' : 'Open Menu'}
                                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
                                 <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                                 <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
@@ -88,43 +89,42 @@ export const HeroHeader = () => {
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                                 <ThemeToggle />
-                                { token ? (
+                                {token ? (
+                                    <UserDropdown />
+                                ) : (
                                     <>
-                                       <UserDropdown />
+                                        <Button
+                                            asChild
+                                            variant="outline"
+                                            size="sm"
+                                            className={cn(isScrolled && 'lg:hidden')}>
+                                            <Link href="/login">
+                                                <span>Login</span>
+                                            </Link>
+                                        </Button>
+                                        <Button
+                                            asChild
+                                            size="sm"
+                                            className={cn(isScrolled && 'lg:hidden')}>
+                                            <Link href="/signup">
+                                                <span>Sign Up</span>
+                                            </Link>
+                                        </Button>
+                                        <Button
+                                            asChild
+                                            size="sm"
+                                            className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
+                                            <Link href="#">
+                                                <span>Get Started</span>
+                                            </Link>
+                                        </Button>
                                     </>
-                                ) : (<>
-                                    <Button
-                                        asChild
-                                        variant="outline"
-                                        size="sm"
-                                        className={cn(isScrolled && 'lg:hidden')}>
-                                        <Link href="/login">
-                                            <span>Login</span>
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        asChild
-                                        size="sm"
-                                        className={cn(isScrolled && 'lg:hidden')}>
-                                        <Link href="/signup">
-                                            <span>Sign Up</span>
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        asChild
-                                        size="sm"
-                                        className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
-                                        <Link href="#">
-                                            <span>Get Started</span>
-                                        </Link>
-                                    </Button>
-                                </>)
-                            }
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </nav>
         </header>
-    )
-}
+    );
+};

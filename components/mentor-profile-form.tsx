@@ -1,37 +1,36 @@
 "use client"
 
-
-
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import axios from "axios"
-import { set } from "date-fns"
-
 
 export default function MentorProfileForm({ role }: { role?: string }) {
-    // Removed unused userRole state
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const [user, setUser] = useState<any>(null)
     const [bio, setBio] = useState("")
     const [experience, setExperience] = useState("")
     const [availableTime, setAvailableTime] = useState("")
     const [subjects, setSubjects] = useState([])
-    const [selectSubject,setSelectSubject] = useState([]);
+    const [selectSubject, setSelectSubject] = useState([])
 
-
-
+    // Use useEffect to access localStorage on the client-side
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const userFromLocalStorage = JSON.parse(localStorage.getItem("user") || "{}")
+            setUser(userFromLocalStorage)
+        }
+    }, [])
 
     useEffect(() => {
         const fetchSubjects = async () => {
             const subjects = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/subjects`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                }
-            });
-
-            setSubjects(subjects.data.data);
+                },
+            })
+            setSubjects(subjects.data.data)
         }
 
         fetchSubjects()
@@ -39,40 +38,33 @@ export default function MentorProfileForm({ role }: { role?: string }) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        if (!user) return // Ensure user is available before submitting the form
+
         const formData = {
             mentor_profile: role === "mentor" ? {
-                bio, // Add mentor bio field here
+                bio,
                 experience,
                 availability: availableTime,
                 subjects: selectSubject,
             } : undefined,
-
             userId: user.id,
             role,
         }
-        // console.log(formData)
-
 
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-            }
+            },
         })
-
-
 
         setBio("")
         setExperience("")
         setAvailableTime("")
-        // setSubjects([])
-
-        // console.log(response.data);
-
     }
 
     return (
-        <form className="space-y-8"
-            onSubmit={handleSubmit}>
+        <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="bio">Bio</Label>
@@ -103,8 +95,8 @@ export default function MentorProfileForm({ role }: { role?: string }) {
                         multiple
                         className="w-full mt-1"
                         onChange={(e) => {
-                            const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-                            setSelectSubject(selectedOptions);
+                            const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value)
+                            setSelectSubject(selectedOptions)
                         }}
                     >
                         {subjects.map((subject: any) => (
@@ -115,12 +107,14 @@ export default function MentorProfileForm({ role }: { role?: string }) {
 
                 <div className="space-y-2">
                     <Label>Available Time</Label>
-                    <Input id="start-time" type="text" className="mt-1"
-                        onChange={(e) => setAvailableTime(e.target.value)} />
-
+                    <Input
+                        id="start-time"
+                        type="text"
+                        className="mt-1"
+                        onChange={(e) => setAvailableTime(e.target.value)}
+                    />
                 </div>
             </div>
-
 
             <Button type="submit" className="w-full sm:w-auto">
                 Update Profile
