@@ -41,7 +41,7 @@ const Page = () => {
   }
 
   return (
-      <div className=' p-5 md:py-20 md:px-10'>
+      <div className=' p-5 md:pt-0 md:pb-5 md:px-5'>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
           <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
