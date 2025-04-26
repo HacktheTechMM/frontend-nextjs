@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { HeroHeader } from '@/components/hero5-header'
 import { useTheme } from 'next-themes'
@@ -21,9 +21,13 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
-    const {theme} = useTheme();
+    const { theme } = useTheme();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [socialErrorMsg, setSocialErrorMsg] = useState<string | null>(null);
+
+
+
 
     const { register, handleSubmit, formState: { errors }, reset, setError } = useForm({
         resolver: zodResolver(loginSchema),
@@ -64,6 +68,14 @@ export default function LoginPage() {
             toast.error(`Failed to connect with ${provider}`);
         }
     }
+
+    useEffect(() => {
+        const socialAuthMessage = localStorage.getItem('socialAuthMessage');
+        setSocialErrorMsg(socialAuthMessage);
+
+    }, [])
+
+
 
     return (
         <div>
@@ -143,6 +155,10 @@ export default function LoginPage() {
                                 />
                                 {errors.email && (
                                     <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                                )}
+
+                                {socialErrorMsg && (
+                                    <p className="mt-1 text-sm text-red-500">{socialErrorMsg}</p>
                                 )}
                             </div>
 

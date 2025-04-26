@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { UserDropdown } from '@/components/user-dropdown'
 import { MobileNavigation } from '@/components/layout/mobile-navigation'
 import Loading from './Loading'
+import { useUser } from '@/context/UserContext'
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode
@@ -18,6 +19,7 @@ interface AuthenticatedLayoutProps {
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
     const router = useRouter()
     const [loading, setLoading] = useState(true)
+
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -62,7 +64,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
             </>
         )
     }
-g
+
     return <SidebarProvider>
         <AppSidebar />
         <SidebarInset>

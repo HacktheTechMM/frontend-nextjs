@@ -2,46 +2,58 @@
 'use client'
 
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useUser } from '@/context/UserContext'
 
 export function UserDropdown() {
 
     const router = useRouter();
+    const [getRole, setGetRole] = useState("");
 
-  const logout = ()=>{
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("USER");
-    router.push("/login");
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("USER");
+        router.push("/login");
 
 
 
-  }
+    }
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar className="cursor-pointer">
-          <AvatarImage src="/avatar.png" alt="User" />
-          <AvatarFallback>JD</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem onClick={()=>router.push('/createProfile')}>Profile</DropdownMenuItem>
-        <DropdownMenuItem><Link href={'/profile/account'}>Account</Link></DropdownMenuItem>
-        <DropdownMenuItem className="text-red-500" onClick={logout}>
-          <LogOut className="mr-2 size-4" /> Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+    useEffect(() => {
+        const User = JSON.parse(localStorage.getItem("USER"))
+        setGetRole(User.role)
+
+    }, [])
+
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                    <AvatarImage src="/avatar.png" alt="User" />
+                    <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+                {getRole === "user" && (
+                    <DropdownMenuItem onClick={() => router.push('/createProfile')}>Profile Upgrade</DropdownMenuItem>
+                )}
+                <DropdownMenuItem><Link href={'/profile/account'}>Account</Link></DropdownMenuItem>
+                <DropdownMenuItem className="text-red-500" onClick={logout}>
+                    <LogOut className="mr-2 size-4" /> Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
 }

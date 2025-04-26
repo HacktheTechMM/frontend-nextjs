@@ -14,6 +14,7 @@ type UserContextType = {
     loading: boolean;
     token: string | null;
     setToken: React.Dispatch<React.SetStateAction<string | null>>;
+    setUser:any
 };
 
 const UserContext = createContext<UserContextType>({
@@ -21,6 +22,7 @@ const UserContext = createContext<UserContextType>({
     loading: true,
     token: null,
     setToken: () => { },
+    setUser: () => { },
 });
 
 export const useUser = () => useContext(UserContext);
@@ -68,7 +70,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }, [token]);
 
     return (
-        <UserContext.Provider value={{ user, loading, token, setToken }}>
+        <UserContext.Provider value={{ user, loading, token, setToken ,setUser}}>
             {children}
         </UserContext.Provider>
     );
