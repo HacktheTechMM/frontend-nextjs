@@ -30,14 +30,6 @@ export default function LoginPage() {
         mode: 'onBlur'
     });
 
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem('USER');
-        if (storedUser) {
-            router.push('/chats');
-        }
-    }, []);
-
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');

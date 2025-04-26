@@ -35,13 +35,6 @@ export default function RegisterPage() {
         mode: 'onBlur'
     });
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('USER');
-        if (storedUser) {
-            router.push('/chats');
-        }
-    }, []);
-
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
