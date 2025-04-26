@@ -62,7 +62,6 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
             </>
         )
     }
-g
     return <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
