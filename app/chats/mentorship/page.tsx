@@ -20,7 +20,7 @@ const page = () => {
         let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get-mentors`);
         setMentorProfiles(response.data.data);
 
-        console.log(response.data.data);
+        console.log(JSON.stringify(response.data.data[4].availability));
 
 
       }
@@ -50,7 +50,7 @@ const page = () => {
     <div>
 
       <div className='py-20 px-10'>
-        <div className="text-center">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
           <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
           <Link href="/chats/mentorship/bookinglist" className="underline">your bookinglist</Link>

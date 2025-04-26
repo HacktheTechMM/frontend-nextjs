@@ -7,15 +7,16 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import { AvailabilitySelector } from "./availability-selector"
 
 export default function MentorProfileForm({ role }: { role?: string }) {
     const [user, setUser] = useState<any>(null)
     const [bio, setBio] = useState("")
     const [experience, setExperience] = useState("")
-    const [availableTime, setAvailableTime] = useState("")
     const [subjects, setSubjects] = useState([])
     const [selectSubject, setSelectSubject] = useState([])
     const router = useRouter()
+    const [availableTime, setAvailableTime] = useState([])
 
     // Use useEffect to access localStorage on the client-side
     useEffect(() => {
@@ -37,6 +38,7 @@ export default function MentorProfileForm({ role }: { role?: string }) {
 
         fetchSubjects()
     }, [])
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -66,7 +68,6 @@ export default function MentorProfileForm({ role }: { role?: string }) {
 
             setBio("")
             setExperience("")
-            setAvailableTime("")
 
             router.push("/chats/mentorship")
         } catch (error) {
@@ -117,7 +118,7 @@ export default function MentorProfileForm({ role }: { role?: string }) {
                     </select>
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label>Available Time</Label>
                     <Input
                         id="start-time"
@@ -125,7 +126,9 @@ export default function MentorProfileForm({ role }: { role?: string }) {
                         className="mt-1"
                         onChange={(e) => setAvailableTime(e.target.value)}
                     />
-                </div>
+                </div> */}
+
+                <AvailabilitySelector setAvailableTime={setAvailableTime} />
             </div>
 
             <Button type="submit" className="w-full sm:w-auto">

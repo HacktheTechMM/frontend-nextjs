@@ -8,6 +8,8 @@ import { CalendarDays } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import axios from "axios"
 import { z } from "zod"
+import { SelectValue } from "@radix-ui/react-select"
+import TimeSlotSelect from "./time-slot-select"
 
 // Define the mentor data structure
 interface Subject {
@@ -21,7 +23,7 @@ interface Mentor {
     mentor_name: string
     bio: string
     experience: string
-    availability: string
+    availability: any
     subjects: Subject[]
 }
 
@@ -48,6 +50,18 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
     const [selectSubject, setSelectSubject] = useState("")
     const [typeMessage, setTypeMessage] = useState("")
     const [user, setUser] = useState(null) // To store user data after it loads
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedUser = localStorage.getItem("USER");
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        }
+    }, []);
+
+    const parsedAvailability = typeof mentor.availability === "string"
+        ? JSON.parse(mentor.availability)
+        : mentor.availability;
 
     // Check if running in the browser and fetch user data
     useEffect(() => {
@@ -59,29 +73,32 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
         }
     }, [])
 
-    // Handle form submission
-    async function onSubmit(e) {
-        e.preventDefault()
-        toast({
-            title: "Booking requested",
-            description: `You've requested session on ${selectDayTime.current.value}`,
-        })
-
-        if (!user) {
+    const handleShowBookingForm = (show: boolean) => {
+        console.log('user:', user)
+        if (user.role === "mentor" || user.role === "user") {
             toast({
                 title: "Error",
-                description: "User data is not available.",
+                description: "You can't make a booking as a mentor.",
                 variant: "destructive",
             })
             return
         }
+        setShowBookingForm(show)
+    }
+
+    // Handle form submission
+    async function onSubmit(e) {
+        e.preventDefault()
+
+
+
 
         let mentorRequest = {
             mentor_id: parseInt(mentorId.current.value),
             subject_id: parseInt(selectSubject),
             learner_id: parseInt(user.id),
             message: typeMessage,
-            requested_time: selectDayTime.current.value,
+            requested_time: selectedValue,
         }
 
         try {
@@ -95,13 +112,27 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                 }
             )
             console.log(response.data)
+            toast({
+                title: "Booking requested",
+                description: `You've requested session on ${selectDayTime.current.value}`,
+            })
         } catch (error) {
             console.log(error)
+            toast({
+                title: "Error",
+                description: `booking failed ${error}`,
+            })
         }
 
         // Reset form after submission
         setShowBookingForm(false)
     }
+
+    const [selectedValue, setSelectedValue] = useState("");
+
+    const handleChange = (e) => {
+        setSelectedValue(e.target.value);
+    };
 
     return (
         <div className="container mx-auto">
@@ -129,51 +160,34 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
                     <div>
                         <h3 className="text-lg font-medium mb-2">Availability</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3">
-                            <div className="flex items-center p-2 border rounded-md">
-                                <div>
-                                    <div className="font-medium">{mentor.availability.split(" ")[0]}</div>
-                                    <div className="text-sm text-muted-foreground">
-                                       {mentor.availability}
+                        <ul className="space-y-4 grid grid-cols-2 gap-2">
+                            {parsedAvailability.map((item, index) => (
+                                <li key={index} className="border p-4 rounded-lg shadow">
+                                    <div className="text-sm font-semibold">
+                                        {item.date}
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                    <ul className="mt-2 space-y-2 text-sm">
+                                        {item.time_slots.map((slot, idx) => (
+                                            <li key={idx} className="text-gray-700 dark:text-gray-400">
+                                                {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
 
                     {showBookingForm && (
                         <div className="mt-6 p-4 border rounded-lg bg-muted/50">
                             <h3 className="text-lg font-medium mb-4">Book a Session</h3>
                             <form onSubmit={onSubmit} className="space-y-4">
+                                {/* <TimeSlotSelect parsedAvailability={parsedAvailability} selectValue={setSelectedValue} handleChange={handleChange} /> */}
                                 <div>
-                                    <label htmlFor="Day">Day</label>
-                                    <input
-                                        type="text"
-                                        value={mentor.availability}
-                                        ref={selectDayTime}
-                                        disabled
-                                        className="w-full bg-gray-800 rounded p-2"
-                                    />
+                                    <label htmlFor="subject">Select Subject</label>
+
                                 </div>
 
-                                <div>
-                                    <label htmlFor="subject">Subject</label>
-                                    <select
-                                        name="subject"
-                                        id="subject"
-                                        onChange={(e) => setSelectSubject(e.target.value)}
-                                        className="w-full bg-gray-800 p-2 rounded"
-                                    >
-                                        <option defaultValue="" disabled selected>
-                                            Select a subject
-                                        </option>
-                                        {mentor.subjects.map((subject) => (
-                                            <option key={subject.id} value={subject.id}>
-                                                {subject.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
 
                                 <input type="text" hidden value={mentor.id} ref={mentorId} />
 
@@ -190,7 +204,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                                 </div>
 
                                 <div className="flex justify-end space-x-2">
-                                    <Button type="button" variant="outline" onClick={() => setShowBookingForm(false)}>
+                                    <Button type="button" variant="outline" onClick={() => handleShowBookingForm(false)}>
                                         Cancel
                                     </Button>
                                     <Button type="submit">Book Session</Button>
