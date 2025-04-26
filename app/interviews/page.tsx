@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import InterviewCard from './_components/InterviewCard';
 import { useUser } from '@/context/UserContext';
+import { ArrowLeft } from 'lucide-react';
 
 interface Interview {
   interview_id: string;
@@ -21,7 +22,13 @@ const Interviewspage = () => {
     
   return (
     <>
+      <Link href="/chats" className="underline flex items-center gap-2">
+        <ArrowLeft size={16} />
+        Back to roadmap
+      </Link>
+
       <section className="flex flex-row bg-gradient-to-b from-[#171532] to-[#08090D] rounded-3xl px-16 items-center justify-between max-sm:px-4">
+
         <div className="flex flex-col gap-6 p-4 max-w-lg text-white dark:text-white/90">
           <h2 className='md:text-md lg:text-2xl'>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
           <p className="text-sm md:text-md lg:text-xl">

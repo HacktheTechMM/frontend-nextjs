@@ -99,6 +99,9 @@ export default function TableDemo() {
             <div className="flex flex-col items-center justify-center h-screen">
                 <h1 className='text-2xl font-bold text-center'>Loading Mentor Request List</h1>
                 <p className='text-center'>Please wait.</p>
+                <div className="flex items-center justify-center mt-4">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+                </div>
             </div>
         )
     }
@@ -113,7 +116,9 @@ export default function TableDemo() {
     }
 
     return (
-        <Table className="max-w-5xl mt-20 mx-auto border-separate border-spacing-y-10">
+        
+        <div className="px-5">
+            <Table className="max-w-5xl mx-auto border-separate border-spacing-y-4 px-2 shadow-lg rounded-lg border border-gray-200 ">
             {user.role == "learner" && (
                 <TableCaption>Your's Mentor Request List</TableCaption>
             )}
@@ -122,7 +127,7 @@ export default function TableDemo() {
                 <TableCaption>Mentor's Learner Request List</TableCaption>
             )}
             <TableHeader>
-                <TableRow>
+                <TableRow className="bg-accent">
                     <TableHead className="w-[200px]">MentorName</TableHead>
                     <TableHead>SubjectName</TableHead>
                     <TableHead>Request User</TableHead>
@@ -168,7 +173,7 @@ export default function TableDemo() {
 
             </TableFooter>
         </Table>
-
+        </div>
     )
 }
 
