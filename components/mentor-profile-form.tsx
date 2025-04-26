@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function MentorProfileForm({ role }: { role?: string }) {
     const [user, setUser] = useState<any>(null)
@@ -14,6 +15,7 @@ export default function MentorProfileForm({ role }: { role?: string }) {
     const [availableTime, setAvailableTime] = useState("")
     const [subjects, setSubjects] = useState([])
     const [selectSubject, setSelectSubject] = useState([])
+    const router = useRouter()
 
     // Use useEffect to access localStorage on the client-side
     useEffect(() => {
@@ -42,25 +44,35 @@ export default function MentorProfileForm({ role }: { role?: string }) {
         if (!user) return // Ensure user is available before submitting the form
 
         const formData = {
-            mentor_profile: role === "mentor" ? {
+            mentor_profile: role === "MENTOR" ? {
                 bio,
                 experience,
                 availability: availableTime,
                 subjects: selectSubject,
             } : undefined,
             userId: user.id,
-            role,
+            role: role?.toLowerCase(),
         }
 
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
+        console.log(formData);
 
-        setBio("")
-        setExperience("")
-        setAvailableTime("")
+
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+
+            setBio("")
+            setExperience("")
+            setAvailableTime("")
+
+            router.push("/chats/mentorship")
+        } catch (error) {
+            console.log(error);
+
+        }
     }
 
     return (

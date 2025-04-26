@@ -36,7 +36,7 @@ export default function RegisterPage() {
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
-            let response = await axios.post(`http://127.0.0.1:8000/api/v1/auth/register`, data, {
+            let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -52,15 +52,15 @@ export default function RegisterPage() {
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 Object.entries(error.response.data.errors).forEach(([key, message]) => {
-                    setError(key as "name" | "email" | "password" | "password_confirmation", { 
-                        type: "server", 
-                        message: message as string 
+                    setError(key as "name" | "email" | "password" | "password_confirmation", {
+                        type: "server",
+                        message: message as string
                     });
                 });
             } else {
-                setError("root.serverError", { 
-                    type: "server", 
-                    message: "An unexpected error occurred." 
+                setError("root.serverError", {
+                    type: "server",
+                    message: "An unexpected error occurred."
                 });
             }
             toast.error('Failed to create account. Please try again.');
@@ -71,7 +71,7 @@ export default function RegisterPage() {
 
     const handleSocialAuth = (provider: string) => {
         try {
-            window.location.href = `http://127.0.0.1:8000/auth/${provider}/redirect`;
+            window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/${provider}/redirect`;
         } catch (error) {
             console.log(error);
             toast.error(`Failed to connect with ${provider}`);

@@ -12,9 +12,7 @@ import {
 } from "@/components/ui/table"
 import { useUser } from "@/context/UserContext"
 import axios from "axios"
-import { set } from "date-fns"
 import { useEffect, useState } from "react"
-
 
 
 
@@ -35,7 +33,6 @@ const getStatusColor = (status: string) => {
 
 
 
-
 export default function TableDemo() {
 
     const [requestList, setRequestList] = useState<any>([])
@@ -43,10 +40,8 @@ export default function TableDemo() {
     const [user, setUser] = useState<any>(null)
 
 
-
     //   console.log(user.user?.role);
     const acceptRequest = async (id: any) => {
-
 
         try {
             console.log('request id:', id);
@@ -63,7 +58,6 @@ export default function TableDemo() {
                 )
             );
 
-
         } catch (error) {
             console.log(error);
 
@@ -78,10 +72,12 @@ export default function TableDemo() {
     useEffect(() => {
         if (!user) return
 
+
+
         const handleMentor = async () => {
             try {
                 const token = localStorage.getItem("token")
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${user.role === "LEARNER" ? 'my-mentor-requests' : 'mentor/learner-requests'}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${user.role === "learner" ? 'my-mentor-requests' : 'mentor/learner-requests'}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -97,7 +93,6 @@ export default function TableDemo() {
 
         handleMentor()
     }, [user])
-
 
     if (loading) {
         return (
@@ -119,11 +114,11 @@ export default function TableDemo() {
 
     return (
         <Table className="max-w-5xl mt-20 mx-auto border-separate border-spacing-y-10">
-            {user.role == "LEARNER" && (
+            {user.role == "learner" && (
                 <TableCaption>Your's Mentor Request List</TableCaption>
             )}
 
-            {user.role == "MENTOR" && (
+            {user.role == "mentor" && (
                 <TableCaption>Mentor's Learner Request List</TableCaption>
             )}
             <TableHeader>
@@ -132,11 +127,11 @@ export default function TableDemo() {
                     <TableHead>SubjectName</TableHead>
                     <TableHead>Request User</TableHead>
                     <TableHead>RequestTime</TableHead>
-                    {user.role == "LEARNER" && (
+                    {user.role == "learner" && (
                         <TableHead className="text-right">Status</TableHead>
                     )}
 
-                    {user.role == "MENTOR" && (
+                    {user.role == "mentor" && (
                         <TableHead className="text-center">Actions</TableHead>
                     )}
                 </TableRow>
@@ -148,11 +143,11 @@ export default function TableDemo() {
                         <TableCell>{request.subject_name}</TableCell>
                         <TableCell>{request.learner_name}</TableCell>
                         <TableCell>{request.requested_time}</TableCell>
-                        {user.role == "LEARNER" && (
+                        {user.role == "learner" && (
                             <TableCell className={`text-right`}>{request.status}</TableCell>
                         )}
 
-                        {user.role == "MENTOR" && (
+                        {user.role == "mentor" && (
                             <TableCell >
                                 <div className="flex justify-end">
                                     {request.status === "pending" ? (
@@ -176,3 +171,5 @@ export default function TableDemo() {
 
     )
 }
+
+

@@ -46,14 +46,14 @@ export default function CreateProfile() {
 
 
 
-            {selectProfile === "mentor" && (
+            {selectProfile === "MENTOR" && (
                 <div className="max-w-3xl mx-auto py-4">
                     <MentorProfileForm role={selectProfile}/>
                 </div>
             )}
 
 
-            {selectProfile === "learner" && (
+            {selectProfile === "LEARNER" && (
                 <div className="max-w-3xl mx-auto py-4">
                     <LearnerProfileForm role={selectProfile}/>
                 </div>
