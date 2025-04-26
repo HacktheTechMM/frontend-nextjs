@@ -8,6 +8,7 @@ import { CalendarDays } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import axios from "axios"
 import { z } from "zod"
+import BookingDialog from "./booking-dialog"
 
 // Define the mentor data structure
 interface Subject {
@@ -21,71 +22,53 @@ interface Mentor {
     mentor_name: string
     bio: string
     experience: string
-    availability: string
+    availability: any
     subjects: Subject[]
 }
 
-// Form schema for booking validation
-const bookingFormSchema = z.object({
-    availability: z.string({
-        required_error: "Please select a day.",
-    }),
-    time: z.string({
-        required_error: "Please select a time.",
-    }),
-    subject: z.string({
-        required_error: "Please select a subject.",
-    }),
-    message: z.string({
-        required_error: "Please enter message.",
-    }),
-})
-
-export default function MentorProfile({ mentor }: { mentor: Mentor }) {
-    const [showBookingForm, setShowBookingForm] = useState(false)
+export default function MentorProfile({ mentor, user }: { mentor: Mentor; user: any }) {
     const mentorId = useRef(null)
     const selectDayTime = useRef("")
-    const [selectSubject, setSelectSubject] = useState("")
-    const [typeMessage, setTypeMessage] = useState("")
-    const [user, setUser] = useState(null) // To store user data after it loads
+    
 
-    // Check if running in the browser and fetch user data
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedUser = localStorage.getItem("user")
-            if (storedUser) {
-                setUser(JSON.parse(storedUser))
-            }
-        }
-    }, [])
+    const parsedAvailability = typeof mentor.availability === "string"
+        ? JSON.parse(mentor.availability)
+        : mentor.availability;
+
 
     // Handle form submission
-    async function onSubmit(e) {
+    async function handleSubmit(booking_form: { subject_id: number; availability: string; message: string; }, e: React.FormEvent) {
         e.preventDefault()
-        toast({
-            title: "Booking requested",
-            description: `You've requested session on ${selectDayTime.current.value}`,
-        })
 
-        if (!user) {
+        if (user.role == 'user') {
             toast({
                 title: "Error",
-                description: "User data is not available.",
-                variant: "destructive",
+                description: `Please upgrade your account ro learner to book sessions`,
             })
             return
         }
 
-        let mentorRequest = {
-            mentor_id: parseInt(mentorId.current.value),
-            subject_id: parseInt(selectSubject),
-            learner_id: parseInt(user.id),
-            message: typeMessage,
-            requested_time: selectDayTime.current.value,
+        if (user.role == 'mentor') {
+            toast({
+                title: "Error",
+                description: `Mentors cannot book sessions`,
+            })
+            return
+        }
+        console.log("Booking form data:", booking_form)
+
+        const mentorRequest = {
+            mentor_id: mentor.id,
+            subject_id: booking_form.subject_id,
+            requested_time: booking_form.availability,
+            // learner_id: user ? parseInt(user.id) : 0,
+            message: booking_form.message,
         }
 
+        console.log("Mentor request data:", JSON.stringify(mentorRequest))
+
         try {
-            let response = await axios.post(
+            const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mentor-request`,
                 mentorRequest,
                 {
@@ -95,12 +78,17 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
                 }
             )
             console.log(response.data)
+            toast({
+                title: "Booking requested",
+                description: `You've requested session on ${selectDayTime.current || ""}`,
+            })
         } catch (error) {
             console.log(error)
+            toast({
+                title: "Error",
+                description: `booking failed ${error}`,
+            })
         }
-
-        // Reset form after submission
-        setShowBookingForm(false)
     }
 
     return (
@@ -129,83 +117,26 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
                     <div>
                         <h3 className="text-lg font-medium mb-2">Availability</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3">
-                            <div className="flex items-center p-2 border rounded-md">
-                                <div>
-                                    <div className="font-medium">{mentor.availability.split(" ")[0]}</div>
-                                    <div className="text-sm text-muted-foreground">
-                                       {mentor.availability}
+                        <ul className="space-y-4 grid grid-cols-2 gap-2">
+                            {parsedAvailability.map((item, index) => (
+                                <li key={index} className="border p-4 rounded-lg shadow">
+                                    <div className="text-sm font-semibold">
+                                        {item.date}
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {showBookingForm && (
-                        <div className="mt-6 p-4 border rounded-lg bg-muted/50">
-                            <h3 className="text-lg font-medium mb-4">Book a Session</h3>
-                            <form onSubmit={onSubmit} className="space-y-4">
-                                <div>
-                                    <label htmlFor="Day">Day</label>
-                                    <input
-                                        type="text"
-                                        value={mentor.availability}
-                                        ref={selectDayTime}
-                                        disabled
-                                        className="w-full bg-gray-800 rounded p-2"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="subject">Subject</label>
-                                    <select
-                                        name="subject"
-                                        id="subject"
-                                        onChange={(e) => setSelectSubject(e.target.value)}
-                                        className="w-full bg-gray-800 p-2 rounded"
-                                    >
-                                        <option defaultValue="" disabled selected>
-                                            Select a subject
-                                        </option>
-                                        {mentor.subjects.map((subject) => (
-                                            <option key={subject.id} value={subject.id}>
-                                                {subject.name}
-                                            </option>
+                                    <ul className="mt-2 space-y-2 text-sm">
+                                        {item.time_slots.map((slot, idx) => (
+                                            <li key={idx} className="text-gray-700 dark:text-gray-400">
+                                                {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+                                            </li>
                                         ))}
-                                    </select>
-                                </div>
-
-                                <input type="text" hidden value={mentor.id} ref={mentorId} />
-
-                                <div>
-                                    <label htmlFor="message">Message</label>
-                                    <textarea
-                                        name="message"
-                                        id=""
-                                        onChange={(e) => setTypeMessage(e.target.value)}
-                                        className="w-full bg-gray-800 rounded p-2"
-                                        placeholder="Enter your booking message"
-                                        rows={4}
-                                    ></textarea>
-                                </div>
-
-                                <div className="flex justify-end space-x-2">
-                                    <Button type="button" variant="outline" onClick={() => setShowBookingForm(false)}>
-                                        Cancel
-                                    </Button>
-                                    <Button type="submit">Book Session</Button>
-                                </div>
-                            </form>
-                        </div>
-                    )}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    
+                    <BookingDialog mentor={mentor} parsedAvailability={parsedAvailability} onSubmit={handleSubmit} />
                 </CardContent>
-                <CardFooter>
-                    {!showBookingForm && (
-                        <Button className="w-full" onClick={() => setShowBookingForm(true)}>
-                            Book Session
-                        </Button>
-                    )}
-                </CardFooter>
             </Card>
         </div>
     )
