@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarDays } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import axios from "axios"
+import { z } from "zod"
 
 // Define the mentor data structure
 interface Subject {
@@ -103,7 +104,7 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
     }
 
     return (
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl">{mentor.mentor_name}</CardTitle>

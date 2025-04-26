@@ -41,15 +41,14 @@ const Page = () => {
   }
 
   return (
-    <AuthenticatedLayout>
-      <div className='py-20 px-10'>
-        <div className="text-center">
+      <div className=' p-5 md:py-20 md:px-10'>
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-center mb-6">Mentor Profile</h1>
           <p className="text-center text-gray-600 mb-4">Learn more about your mentor and book a session.</p>
-          <Link href="/mentorship/bookinglist" className="underline">your bookinglist</Link>
+          <Link href="/chats/mentorship/bookinglist" className="underline">your bookinglist</Link>
         </div>
 
-        <div className='grid grid-cols-1 gap-4 mx-auto md:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-6 mx-auto md:grid-cols-3'>
           {mentorProfiles.length > 0 ? (
             mentorProfiles.map((mentor) => (
               <DynamicMentorProfile key={mentor.id} mentor={mentor} />
@@ -59,7 +58,6 @@ const Page = () => {
           )}
         </div>
       </div>
-    </AuthenticatedLayout>
   );
 };
 

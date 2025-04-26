@@ -74,7 +74,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
                     </div>
                 </div>
             </header>
-            <main className="flex-1 p-6 pb-20 md:pb-6">{children}</main>
+            <main className="flex-1 py-10 md:pb-6">{children}</main>
             <MobileNavigation items={navigationItems} />
         </SidebarInset>
     </SidebarProvider>
