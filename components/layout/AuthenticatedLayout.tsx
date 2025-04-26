@@ -9,6 +9,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { UserDropdown } from '@/components/user-dropdown'
 import { MobileNavigation } from '@/components/layout/mobile-navigation'
+import Loading from './Loading'
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode
@@ -54,9 +55,9 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <p>Checking authentication...</p>
-            </div>
+            <>
+                <Loading />
+            </>
         )
     }
 
@@ -65,9 +66,9 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
         <SidebarInset>
             <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
                 <SidebarTrigger className="hidden md:flex" />
-                <Separator orientation="vertical" className="h-6 hidden md:flex" />
+                <Separator className="h-6 hidden md:flex" />
                 <div className="flex justify-between w-full items-center">
-                    <div className="font-semibold">Dashboard</div>
+                    <div className="font-bold text-xl font-mono">AKyanPay</div>
                     <div className="flex items-center gap-x-4">
                         <ThemeToggle />
                         <UserDropdown />

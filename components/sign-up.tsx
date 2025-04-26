@@ -1,18 +1,19 @@
 "use client"
 
-import { LogoIcon } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import Link from 'next/link'
-import {  useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { HeroHeader } from './hero5-header'
+import Image from 'next/image'
+import { useTheme } from 'next-themes'
 
 const signUpSchema = z.object({
     name: z.string().min(1, "Username is required"),
@@ -25,6 +26,7 @@ const signUpSchema = z.object({
 });
 
 export default function RegisterPage() {
+    const {theme} = useTheme(); 
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -52,15 +54,15 @@ export default function RegisterPage() {
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 Object.entries(error.response.data.errors).forEach(([key, message]) => {
-                    setError(key as "name" | "email" | "password" | "password_confirmation", { 
-                        type: "server", 
-                        message: message as string 
+                    setError(key as "name" | "email" | "password" | "password_confirmation", {
+                        type: "server",
+                        message: message as string
                     });
                 });
             } else {
-                setError("root.serverError", { 
-                    type: "server", 
-                    message: "An unexpected error occurred." 
+                setError("root.serverError", {
+                    type: "server",
+                    message: "An unexpected error occurred."
                 });
             }
             toast.error('Failed to create account. Please try again.');
@@ -92,7 +94,13 @@ export default function RegisterPage() {
                                 href="/"
                                 aria-label="go home"
                                 className="mx-auto block w-fit">
-                                <LogoIcon />
+                                {theme === 'light' ? (
+                                    <Image src="/logo-akyanpay.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                ) : (
+                                    <Image src="/logo-akyanpay-dark.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                )}
                             </Link>
                             <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Create a Tailark Account</h1>
                             <p className="text-sm">Welcome! Create an account to get started</p>
@@ -140,16 +148,7 @@ export default function RegisterPage() {
                                         className="text-title text-sm">
                                         Password
                                     </Label>
-                                    <Button
-                                        asChild
-                                        variant="link"
-                                        size="sm">
-                                        <Link
-                                            href="#"
-                                            className="link intent-info variant-ghost text-sm">
-                                            Forgot your Password ?
-                                        </Link>
-                                    </Button>
+                                    
                                 </div>
                                 <Input
                                     type="password"
@@ -257,6 +256,6 @@ export default function RegisterPage() {
                     </div>
                 </form>
             </section>
-       </div>
+        </div>
     )
 }

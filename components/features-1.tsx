@@ -1,60 +1,104 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Settings2, Sparkles, Zap } from 'lucide-react'
+import { BotMessageSquare, Brain, Code, LaptopMinimalCheck, UserRoundSearch, Users } from 'lucide-react'
 import { ReactNode } from 'react'
 
 export default function Features() {
     return (
-        <section className="bg-zinc-50 py-16 md:py-32 dark:bg-transparent">
+        <section className="bg-zinc-50 py-16 md:py-32 dark:bg-transparent" id='features'>
             <div className="@container mx-auto max-w-5xl px-6">
                 <div className="text-center">
                     <h2 className="text-balance text-4xl font-semibold lg:text-5xl">Built to cover your needs</h2>
-                    <p className="mt-4">Libero sapiente aliquam quibusdam aspernatur, praesentium iusto repellendus.</p>
+                    <p className="mt-4">No more guesswork. No more tab chaos. Just the tools, the path, and the people to help you actually get there.</p>
                 </div>
                 <div className="@min-4xl:max-w-full @min-4xl:grid-cols-3 mx-auto mt-8 grid max-w-sm gap-6 *:text-center md:mt-16">
                     <Card className="group shadow-zinc-950/5">
                         <CardHeader className="pb-3">
                             <CardDecorator>
-                                <Zap className="size-6" aria-hidden />
+                                <BotMessageSquare />
                             </CardDecorator>
 
-                            <h3 className="mt-6 font-medium">Customizable</h3>
+                            <h3 className="mt-6 font-medium">AI Mentor</h3>
                         </CardHeader>
 
                         <CardContent>
-                            <p className="text-sm">Extensive customization options, allowing you to tailor every aspect to meet your specific needs.</p>
+                            <p className="text-sm">Get a personalized learning roadmap in seconds by just chatting with our smart AI mentor.</p>                        </CardContent>
+                    </Card>
+
+                    <Card className="group shadow-zinc-950/5">
+                        <CardHeader className="pb-3">
+                            <CardDecorator>
+                                <UserRoundSearch />
+                            </CardDecorator>
+
+                            <h3 className="mt-6 font-medium">Guides From Senior</h3>
+                        </CardHeader>
+
+                        <CardContent>
+                            <p className="mt-3 text-sm">Stuck or confused? Get help and guidance from experienced developers, anytime you need.</p>
                         </CardContent>
                     </Card>
 
                     <Card className="group shadow-zinc-950/5">
                         <CardHeader className="pb-3">
                             <CardDecorator>
-                                <Settings2 className="size-6" aria-hidden />
+                                <Users />
                             </CardDecorator>
 
-                            <h3 className="mt-6 font-medium">You have full control</h3>
+                            <h3 className="mt-6 font-medium">Mettings With Mentor</h3>
                         </CardHeader>
 
                         <CardContent>
-                            <p className="mt-3 text-sm">From design elements to functionality, you have complete control to create a unique and personalized experience.</p>
+                            <p className="mt-3 text-sm">Practice real-world coding problems and test your skills directly on the platform.</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="group shadow-zinc-950/5 justify-items-center">
+                        <CardHeader className="pb-3">
+                            <CardDecorator>
+                                <Code />
+                            </CardDecorator>
+
+                            <h3 className="mt-6 font-medium">Codes Test With Us</h3>
+                        </CardHeader>
+
+                        <CardContent>
+                            <p className="mt-3 text-sm">Practice real-world coding problems and test your skills directly on the platform.</p>
                         </CardContent>
                     </Card>
 
                     <Card className="group shadow-zinc-950/5">
                         <CardHeader className="pb-3">
                             <CardDecorator>
-                                <Sparkles className="size-6" aria-hidden />
+                                <Brain />
                             </CardDecorator>
 
-                            <h3 className="mt-6 font-medium">Powered By AI</h3>
+                            <h3 className="mt-6 font-medium">Funny With Quizzs</h3>
                         </CardHeader>
 
                         <CardContent>
-                            <p className="mt-3 text-sm">Elements to functionality, you have complete control to create a unique experience.</p>
+                            <p className="mt-3 text-sm">Keep your learning fun and engaging with interactive quizzes after every topic.</p>
                         </CardContent>
                     </Card>
+
+                    <Card className="group shadow-zinc-950/5">
+                        <CardHeader className="pb-3">
+                            <CardDecorator>
+                                <LaptopMinimalCheck />
+                            </CardDecorator>
+
+                            <h3 className="mt-6 font-medium">Mock Interviews</h3>
+                        </CardHeader>
+
+                        <CardContent>
+                            <p className="mt-3 text-sm">Get ready for real interviews by practicing with AI-driven mock sessions.</p>
+                        </CardContent>
+                    </Card>
+
+
+
                 </div>
             </div>
-        </section>
+        </section >
     )
 }
 

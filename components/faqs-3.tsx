@@ -15,38 +15,39 @@ export default function FAQsThree() {
     const faqItems: FAQItem[] = [
         {
             id: 'item-1',
-            icon: 'clock',
-            question: 'What are your business hours?',
-            answer: 'Our customer service team is available Monday through Friday from 9:00 AM to 8:00 PM EST, and weekends from 10:00 AM to 6:00 PM EST. During holidays, hours may vary and will be posted on our website.',
+            icon: 'brain-circuit',
+            question: 'How does the AI generate my learning roadmap?',
+            answer: 'Our AI takes your goals, current skill level, and preferences to build a custom roadmap. It’s designed to guide you step-by-step — like a GPS for your coding journey.',
         },
         {
             id: 'item-2',
-            icon: 'credit-card',
-            question: 'How do subscription payments work?',
-            answer: 'Subscription payments are automatically charged to your default payment method on the same day each month or year, depending on your billing cycle. You can update your payment information and view billing history in your account dashboard.',
+            icon: 'users',
+            question: 'What if the AI doesn’t answer correctly?',
+            answer: 'That’s why we have real mentors! You can chat or book sessions with experienced developers to clarify doubts, review your path, or just get solid advice.',
         },
         {
             id: 'item-3',
-            icon: 'truck',
-            question: 'Can I expedite my shipping?',
-            answer: 'Yes, we offer several expedited shipping options at checkout. Next-day and 2-day shipping are available for most U.S. addresses if orders are placed before 2:00 PM EST. International expedited shipping options vary by destination.',
+            icon: 'file-code',
+            question: 'What kind of coding tests do you offer?',
+            answer: 'We offer hands-on challenges in languages like JavaScript, Python, and more. You can practice real problems, get instant feedback, and track your progress.',
         },
         {
             id: 'item-4',
-            icon: 'globe',
-            question: 'Do you offer localized support?',
-            answer: 'We offer multilingual support in English, Spanish, French, German, and Japanese. Our support team can assist customers in these languages via email, chat, and phone during standard business hours for each respective region.',
+            icon: 'mic',
+            question: 'Can I practice interviews here?',
+            answer: 'Yes! You can take mock interviews powered by AI or real mentors. We simulate technical and behavioral rounds to help you feel confident and ready.',
         },
         {
             id: 'item-5',
-            icon: 'package',
-            question: 'How do I track my order?',
-            answer: 'Once your order ships, you\'ll receive a confirmation email with a tracking number. You can use this number on our website or the carrier\'s website to track your package. You can also view order status and tracking information in your account dashboard under "Order History".',
+            icon: 'smile',
+            question: 'Is there anything fun to keep me engaged?',
+            answer: 'Definitely! We’ve added quick quizzes and small rewards to make your learning journey more interactive and less stressful.',
         },
     ]
+    
 
     return (
-        <section className="bg-muted dark:bg-background py-20">
+        <section className="bg-muted dark:bg-background py-20" id='q&a'>
             <div className="mx-auto max-w-5xl px-4 md:px-6">
                 <div className="flex flex-col gap-10 md:flex-row md:gap-16">
                     <div className="md:w-1/3">
