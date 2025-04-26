@@ -36,7 +36,7 @@ export function UserDropdown() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem><Link href={'/createProfile'}>Profile</Link></DropdownMenuItem>
+        <DropdownMenuItem onClick={()=>router.push('/createProfile')}>Profile</DropdownMenuItem>
         <DropdownMenuItem><Link href={'/profile/account'}>Account</Link></DropdownMenuItem>
         <DropdownMenuItem className="text-red-500" onClick={logout}>
           <LogOut className="mr-2 size-4" /> Logout

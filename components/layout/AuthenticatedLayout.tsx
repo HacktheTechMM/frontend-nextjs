@@ -36,7 +36,9 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
                 })
 
                 // You can store user info in context/state if needed
-                console.log('Authenticated user:', response.data)
+                console.log('Authenticated user:', response.data.data.user)
+                localStorage.setItem('USER', JSON.stringify(response.data.data.user))
+
                 setLoading(false)
             } catch (error) {
                 console.error('Authentication failed:', error)
@@ -60,7 +62,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
             </>
         )
     }
-
+g
     return <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
@@ -75,7 +77,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
                     </div>
                 </div>
             </header>
-            <main className="flex-1 p-6 pb-20 md:pb-6">{children}</main>
+            <main className="flex-1 py-10 md:pb-6">{children}</main>
             <MobileNavigation items={navigationItems} />
         </SidebarInset>
     </SidebarProvider>

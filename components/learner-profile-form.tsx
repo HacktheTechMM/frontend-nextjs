@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function LearnerProfileForm({ role }: { role?: string }) {
     const [age, setAge] = useState("");
@@ -16,35 +17,50 @@ export default function LearnerProfileForm({ role }: { role?: string }) {
     const [specialNeeds, setSpecialNeeds] = useState("");
     const [location, setLocation] = useState("");
     const [userRole] = useState(role);
+    const router = useRouter()
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const formData = {
-            role: userRole,
-            learner_profile: userRole === "learner" ? {
-            age: parseInt(age, 10),
-            school_grade: grade,
-            guardian_contact: contact,
-            learning_goals: goals,
-            special_needs: specialNeeds,
-            location
+            role: userRole?.toLowerCase(),
+            learner_profile: userRole === "LEARNER" ? {
+                age: parseInt(age, 10),
+                school_grade: grade,
+                guardian_contact: contact,
+                learning_goals: goals,
+                special_needs: specialNeeds,
+                location
             } : undefined,
-            mentor_profile: userRole === "mentor" ? {
-            bio: "", // Add mentor bio field here
-            experience: "" // Add mentor experience field here
+            mentor_profile: userRole === "MENTOR" ? {
+                bio: "", // Add mentor bio field here
+                experience: "" // Add mentor experience field here
             } : undefined
         }
         console.log(formData);
 
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            }
-        })
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/upgrade`, formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            })
 
-        console.log(response.data);
+            console.log(response.data);
 
+            setAge("");
+            setGrade("");
+            setContact("");
+            setGoals("");
+            setSpecialNeeds("");
+            setLocation("");
+
+            router.push("/chats/mentorship")
+
+        } catch (error) {
+            console.log(error);
+
+        }
     }
     return (
         <form className="space-y-8"

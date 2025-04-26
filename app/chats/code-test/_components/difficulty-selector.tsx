@@ -206,15 +206,15 @@ export default function DifficultySelector() {
                 {difficultyLevels.map((level) => (
                     <Card
                         key={level.id}
-                        className={`cursor-pointer transition-all hover:shadow-md ${level.color}`}
+                        className={`cursor-pointer transition-all hover:shadow-md ${level.color} dark:bg-card `}
                         onClick={() => setSelectedDifficulty(level)}
                     >
                         <CardHeader>
                             <div className="flex justify-between items-start">
-                                <CardTitle className="text-xl dark:text-black">{level.title}</CardTitle>
+                                <CardTitle className="text-xl dark:text-white">{level.title}</CardTitle>
                                 {level.badge}
                             </div>
-                            <CardDescription className="dark:text-gray-600">{level.description}</CardDescription>
+                            <CardDescription className="dark:text-gray-400">{level.description}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex justify-center py-6">{level.icon}</CardContent>
                         <CardFooter>

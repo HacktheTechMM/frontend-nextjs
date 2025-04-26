@@ -42,11 +42,13 @@ export function MobileNavigation({ items }: MobileNavigationProps) {
                                 size="sm"
                                 className={cn(
                                     "flex flex-col items-center gap-1 p-2 w-full",
-                                    active && "bg-gray-300 hover:bg-gray-400 dark:bg-primary dark:text-black dark:hover:bg-primary/80",
+                                    active && "",
                                 )}
                             >
-                                <item.icon className={cn("h-5 w-5", active && "text-black dark:text-white")} />
-                                <span className="text-xs">{item.title}</span>
+                                <div className={cn("flex items-center justify-center", active ? "text-primary border p-2 rounded border-primary" : "opacity-70")}>
+                                    <item.icon className={cn("h-5 w-5", active && "text-primary")} />
+                                </div>
+                                {/* <span className="text-xs">{item.title}</span> */}
                             </Button>
                         </Link>
                     )
