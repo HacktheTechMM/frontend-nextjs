@@ -1,42 +1,42 @@
-import { Logo } from '@/components/logo'
+import { useTheme } from 'next-themes'
+import Image from 'next/image'
 import Link from 'next/link'
 
 const links = [
     {
         title: 'Features',
-        href: '#',
+        href: '#features',
     },
     {
-        title: 'Solution',
-        href: '#',
+        title: 'Integrations',
+        href: '#integrations',
     },
     {
-        title: 'Customers',
-        href: '#',
+        title: 'Q&A',
+        href: '#q&a',
     },
     {
-        title: 'Pricing',
-        href: '#',
-    },
-    {
-        title: 'Help',
-        href: '#',
-    },
-    {
-        title: 'About',
-        href: '#',
-    },
+        title: 'Contact',
+        href: '#contact',
+    }
 ]
 
 export default function FooterSection() {
+    const { theme } = useTheme();
     return (
-        <footer className="py-16 md:py-32">
+        <footer className="py-16 md:py-32" id='contact'>
             <div className="mx-auto max-w-5xl px-6">
                 <Link
                     href="/"
                     aria-label="go home"
                     className="mx-auto block size-fit">
-                    <Logo />
+                    {theme === 'light' ? (
+                        <Image src="/logo-akyanpay.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                    ) : (
+                        <Image src="/logo-akyanpay-dark.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                    )}
                 </Link>
 
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
@@ -158,7 +158,7 @@ export default function FooterSection() {
                         </svg>
                     </Link>
                 </div>
-                <span className="text-muted-foreground block text-center text-sm"> © {new Date().getFullYear()} Tailark, All rights reserved</span>
+                <span className="text-muted-foreground block text-center text-sm"> © {new Date().getFullYear()} AKyanPay, All rights reserved</span>
             </div>
         </footer>
     )

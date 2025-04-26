@@ -1,8 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BotMessageSquare, Brain, ChevronRight, Code, Home, LaptopMinimalCheck, LayoutDashboard, Settings, UserRoundSearch, Users } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { BotMessageSquare, Brain, Code, LaptopMinimalCheck, UserRoundSearch, Users } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -18,6 +17,8 @@ import {
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "../theme-toggle"
 import { UserDropdown } from "../user-dropdown"
+import Image from "next/image"
+import { useTheme } from "next-themes"
 
 // Navigation items with icons - exported for reuse in mobile navigation
 export const navigationItems = [
@@ -69,6 +70,7 @@ const navigationSections = [
 ]
 
 export function AppSidebar() {
+    const {theme} = useTheme(); 
     const pathname = usePathname()
 
     // Check if a path is active
@@ -80,8 +82,15 @@ export function AppSidebar() {
         <Sidebar className="hidden md:flex" collapsible="icon">
             <SidebarHeader className="border-b p-4">
                 <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                        <LayoutDashboard className="h-4 w-4" />
+                    <div className="flex h-8 w-8 ">
+                        {/* <LayoutDashboard className="h-4 w-4" /> */}
+                        {theme === 'light' ? (
+                            <Image src="/logo-akyanpay.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                        ) : (
+                            <Image src="/logo-akyanpay-dark.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                        )}
                     </div>
                     {/* <span className="font-semibold">AppName</span> */}
                 </div>
@@ -106,34 +115,6 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
 
-                {/* Collapsible sections */}
-                {navigationSections.map((section) => (
-                    <Collapsible key={section.title} className="group/collapsible">
-                        <SidebarGroup>
-                            <SidebarGroupLabel asChild>
-                                <CollapsibleTrigger className="flex w-full items-center justify-between">
-                                    {section.title}
-                                    <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
-
-
-                                </CollapsibleTrigger>
-                            </SidebarGroupLabel>
-                            <CollapsibleContent>
-                                <SidebarGroupContent>
-                                    <SidebarMenu>
-                                        {section.items.map((item) => (
-                                            <SidebarMenuItem key={item.title}>
-                                                <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                                                    <Link href={item.url}>{item.title}</Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ))}
-                                    </SidebarMenu>
-                                </SidebarGroupContent>
-                            </CollapsibleContent>
-                        </SidebarGroup>
-                    </Collapsible>
-                ))}
             </SidebarContent>
             <SidebarFooter className="border-t p-4">
                 <div className="flex items-center gap-2">

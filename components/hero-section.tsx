@@ -49,7 +49,7 @@ export default function HeroSection() {
                                 speedSegment={0.3}
                                 as="h1"
                                 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl">
-                                Your gateway to endless entertainment experiences
+                                Your Personalized Path to Becoming a Developer
                             </TextEffect>
                             <TextEffect
                                 per="line"
@@ -58,7 +58,8 @@ export default function HeroSection() {
                                 delay={0.5}
                                 as="p"
                                 className="mx-auto mt-12 max-w-2xl text-pretty text-lg">
-                                Tailwindcss highly customizable components for building modern websites and applications that look and feel the way you mean it.
+                                AI-powered roadmaps, real mentor guidance, quizzes, code test, and code interviews — all in one place.
+                                Learn smarter. Build faster. Stay on track.                            
                             </TextEffect>
 
                             <AnimatedGroup
@@ -102,7 +103,7 @@ export default function HeroSection() {
                                 </form>
                             </AnimatedGroup>
                         </div>
-                        <div className="mx-auto md:-mt-20 lg:-mt-40">
+                        <div className="mx-auto sm:-mt-20 md:-mt-70 lg:-mt-70">
                             <AnimatedGroup
                                 variants={{
                                     container: {

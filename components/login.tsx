@@ -1,12 +1,10 @@
 "use client"
 
-import { LogoIcon } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import axios from 'axios'
@@ -14,6 +12,8 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { HeroHeader } from '@/components/hero5-header'
+import { useTheme } from 'next-themes'
+import Image from 'next/image'
 
 const loginSchema = z.object({
     email: z.string().email("Please enter a valid email"),
@@ -21,6 +21,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+    const {theme} = useTheme();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +38,7 @@ export default function LoginPage() {
                     'Content-Type': 'application/json',
                 },
             });
-            
+
             let { token, user } = response.data.data;
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
@@ -66,7 +67,7 @@ export default function LoginPage() {
 
     return (
         <div>
-            <HeroHeader/>
+            <HeroHeader />
             <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent w-full">
                 <form
                     onSubmit={handleSubmit(onSubmit)}
@@ -77,7 +78,13 @@ export default function LoginPage() {
                             <Link
                                 href="/"
                                 aria-label="go home">
-                                <LogoIcon />
+                                {theme === 'light' ? (
+                                    <Image src="/logo-akyanpay.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                ) : (
+                                    <Image src="/logo-akyanpay-dark.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                )}
                             </Link>
                             <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to Tailark</h1>
                             <p className="text-sm">Welcome back! Sign in to continue</p>
@@ -146,16 +153,6 @@ export default function LoginPage() {
                                         className="text-title text-sm">
                                         Password
                                     </Label>
-                                    <Button
-                                        asChild
-                                        variant="link"
-                                        size="sm">
-                                        <Link
-                                            href="#"
-                                            className="link intent-info variant-ghost text-sm">
-                                            Forgot your Password ?
-                                        </Link>
-                                    </Button>
                                 </div>
                                 <Input
                                     type="password"

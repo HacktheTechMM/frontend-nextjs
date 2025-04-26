@@ -30,7 +30,7 @@ import { useTheme } from "next-themes"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-import { Drawer } from "@/components/ui/drawer"
+import { Drawer, DrawerTitle } from "@/components/ui/drawer"
 import { DrawerContent } from "@/components/ui/drawer"
 
 // Define roadmap step type
@@ -655,11 +655,12 @@ export default function MentorPage() {
 
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
         <DrawerContent className="w-full max-w-md ml-auto h-full md:hidden">
+          {/* Add DrawerHeader with a visually hidden title for accessibility */}
           {/* Your roadmap sidebar content here */}
           <div className="h-full flex flex-col">
             {/* Top part */}
             <div className="p-4 border-b">
-              <h2 className="text-xl font-semibold">{roadmap?.title || "Your Learning Journey"}</h2>
+             <DrawerTitle className="text-xl font-bold">  {roadmap?.title || "Your Learning Journey"}</DrawerTitle>
               <p className="text-sm text-muted-foreground mt-1">
                 {roadmap?.description || "Your personalized learning path will appear here"}
               </p>

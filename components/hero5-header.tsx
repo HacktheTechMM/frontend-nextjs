@@ -1,21 +1,23 @@
 'use client';
 import Link from 'next/link';
-import { Logo } from './logo';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 import { UserDropdown } from './user-dropdown';
+import Image from 'next/image';
+import { useTheme } from 'next-themes';
 
 const menuItems = [
-    { name: 'Features', href: '#link' },
-    { name: 'Solution', href: '#link' },
-    { name: 'Pricing', href: '#link' },
-    { name: 'About', href: '#link' },
+    { name: 'Features', href: '#features' },
+    { name: 'Integrations', href: '#integrations' },
+    { name: 'Q&A', href: '#q&a' },
+    { name: 'Contact', href: '#contact' },
 ];
 
 export const HeroHeader = () => {
+    const { theme } = useTheme();
     const [menuState, setMenuState] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [token, setToken] = useState<string | null>(null);
@@ -47,7 +49,14 @@ export const HeroHeader = () => {
                                 href="/"
                                 aria-label="home"
                                 className="flex items-center space-x-2">
-                                <Logo />
+                                {/* <Logo /> */}
+                                {theme === 'light' ? (
+                                    <Image src="/logo-akyanpay.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                ) : (
+                                    <Image src="/logo-akyanpay-dark.svg" alt="AkyanPay Logo" width={75} height={50} />
+
+                                )}
                             </Link>
 
                             <button
