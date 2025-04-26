@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarDays } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import axios from "axios"
+import { z } from "zod"
 
 // Define the mentor data structure
 interface Subject {
@@ -128,10 +129,10 @@ export default function MentorProfile({ mentor }: { mentor: Mentor }) {
 
                     <div>
                         <h3 className="text-lg font-medium mb-2">Availability</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div className="flex items-center p-3 border rounded-md">
+                        <div className="">
+                            <div className="w-full items-center p-3 border rounded-md">
                                 <CalendarDays className="h-4 w-4 mr-2" />
-                                <div>
+                                <div className="w-full">
                                     <div className="font-medium">{mentor.availability.split(" ")[0]}</div>
                                     <div className="text-sm text-muted-foreground">
                                         {mentor.availability.split(" ")[1]}

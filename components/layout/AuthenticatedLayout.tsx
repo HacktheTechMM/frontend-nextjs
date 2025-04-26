@@ -35,7 +35,9 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
                 })
 
                 // You can store user info in context/state if needed
-                console.log('Authenticated user:', response.data)
+                console.log('Authenticated user:', response.data.data.user)
+                localStorage.setItem('USER', JSON.stringify(response.data.data.user))
+
                 setLoading(false)
             } catch (error) {
                 console.error('Authentication failed:', error)
