@@ -42,7 +42,7 @@ export default function MentorProfile({ mentor, user }: { mentor: Mentor; user: 
 
         if (user.role == 'user') {
             toast({
-                title: "Error",
+                title: "Account Upgrade Required",
                 description: `Please upgrade your account ro learner to book sessions`,
             })
             return
@@ -50,7 +50,7 @@ export default function MentorProfile({ mentor, user }: { mentor: Mentor; user: 
 
         if (user.role == 'mentor') {
             toast({
-                title: "Error",
+                title: "Account Upgrade Required",
                 description: `Mentors cannot book sessions`,
             })
             return

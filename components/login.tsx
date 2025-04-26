@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { useEffect, useState } from 'react'
+import { toast } from "@/components/ui/use-toast"
 import { HeroHeader } from '@/components/hero5-header'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
@@ -21,7 +21,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
-    const {theme} = useTheme();
+    const { theme } = useTheme();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +29,17 @@ export default function LoginPage() {
         resolver: zodResolver(loginSchema),
         mode: 'onBlur'
     });
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        if (message) {
+            toast({
+                title: "Socialite Auth Error",
+                description: message,
+            })
+        }
+    }, []);
 
     const onSubmit = async (data: any) => {
         setIsLoading(true);

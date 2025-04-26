@@ -19,10 +19,7 @@ const Page = () => {
             localStorage.setItem("token", token);
             router.push('/');
         } else {
-            if (message) {
-                localStorage.setItem("socialAuthMessage", message);
-            }
-            router.push('/login');
+            router.push(`/login?message=${encodeURIComponent(message)}`);
         }
     }, []);
 

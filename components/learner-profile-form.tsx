@@ -88,9 +88,9 @@ export default function LearnerProfileForm({ role }: { role?: string }) {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="contact">Contact</Label>
+                    <Label htmlFor="contact">Guardian Contact</Label>
                     <Input id="contact" type="text" placeholder="Phone number or email" onChange={(e) => setContact(e.target.value)} />
-                    <p className="text-sm text-muted-foreground">How would you prefer to be contacted?</p>
+                    <p className="text-sm text-muted-foreground"></p>
                 </div>
 
                 <div className="space-y-2">
