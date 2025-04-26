@@ -30,6 +30,14 @@ export default function LoginPage() {
         mode: 'onBlur'
     });
 
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('USER');
+        if (storedUser) {
+            router.push('/chats');
+        }
+    }, []);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');
@@ -54,14 +62,20 @@ export default function LoginPage() {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 
-            toast.success('Logged in successfully!');
+            toast({
+                title: "Success",
+                description: "Logged in successfully",
+            })
             router.push("/chats");
 
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
             setError("email", { type: "manual", message: errorMessage });
             setError("password", { type: "manual" });
-            toast.error(errorMessage);
+            toast({
+                title: "Error",
+                description: "Login failed",
+            })
         } finally {
             setIsLoading(false);
         }
@@ -72,7 +86,10 @@ export default function LoginPage() {
             window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/${provider}/redirect`;
         } catch (error) {
             console.log(error);
-            toast.error(`Failed to connect with ${provider}`);
+            toast({
+                title: "Socialite Error",
+                description: "Fail to redirect to socialite auth",
+            })
         }
     }
 
@@ -97,7 +114,7 @@ export default function LoginPage() {
 
                                 )}
                             </Link>
-                            <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to Tailark</h1>
+                            <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to AkyanPay</h1>
                             <p className="text-sm">Welcome back! Sign in to continue</p>
                         </div>
 

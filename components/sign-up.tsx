@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { HeroHeader } from './hero5-header'
 import Image from 'next/image'
@@ -34,6 +34,13 @@ export default function RegisterPage() {
         resolver: zodResolver(signUpSchema),
         mode: 'onBlur'
     });
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('USER');
+        if (storedUser) {
+            router.push('/chats');
+        }
+    }, []);
 
     const onSubmit = async (data: any) => {
         setIsLoading(true);
@@ -102,7 +109,7 @@ export default function RegisterPage() {
 
                                 )}
                             </Link>
-                            <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Create a Tailark Account</h1>
+                            <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Create a AKyanPay Account</h1>
                             <p className="text-sm">Welcome! Create an account to get started</p>
                         </div>
 
