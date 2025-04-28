@@ -44,11 +44,16 @@ export default function LoginPage() {
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
-            let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signin`, data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            let response = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signin`,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true, // 🔥 You must add this!
+                }
+            );
 
             let { token, user } = response.data.data;
             localStorage.setItem('token', token);
