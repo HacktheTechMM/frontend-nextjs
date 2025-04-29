@@ -17,7 +17,7 @@ const Page = () => {
         if (userId && token) {
             localStorage.setItem('userId', userId);
             localStorage.setItem("token", token);
-            router.push('/');
+            router.push('/chats');
         } else {
             router.push(`/login?message=${encodeURIComponent(message)}`);
         }
