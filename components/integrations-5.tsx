@@ -9,8 +9,8 @@ export default function IntegrationsSection() {
     return (
         <section id='integrations'>
             <div className="py-24 md:py-32">
-                <div className="mx-auto max-w-5xl px-6">
-                    <div className="aspect-16/10 group relative mx-auto flex max-w-[22rem] items-center justify-between sm:max-w-sm">
+                <div className="max-w-sm overflow-hidden p-6 mx-auto">
+                    <div className="aspect-16/10 group relative flex items-center justify-between">
                         <div
                             role="presentation"
                             className="bg-linear-to-b border-foreground/5 absolute inset-0 z-10 aspect-square animate-spin items-center justify-center rounded-full border-t from-lime-500/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100 dark:from-white/5"></div>
